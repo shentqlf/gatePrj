@@ -78,26 +78,31 @@ void exec(PRO* pro)
 			{
 				case '0':
 					connect(pro);
+					ackBuf[6] = '1';
 					break;
 				case '1':
 					warning(pro);
+					ackBuf[6] = '1';
 					break;
 				case '2':
 					jdq1(pro);
+					ackBuf[6] = '1';
 					break;
 				case '3':
 					jdq2(pro);
+					ackBuf[6] = '1';
 					break;				
 				case '4':
 					setTime(pro);
+					ackBuf[6] = '1';
 					break;
 				default :
 					
+					ackBuf[6] = '0';
 					break;
 		
 			}
 			ackBuf[4] = pro->cmd;
-			ackBuf[6] = '1';
 			msg.len =sizeof(ackBuf);
 			msg.buf = ackBuf;
 
