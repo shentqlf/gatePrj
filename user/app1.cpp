@@ -4,14 +4,13 @@
 #include "os.h"
 #include "includes.h"
 
-#include "w5500.h"
-#include "tcp.h"
 
 
 	
 u8 start[] = "\r\n===============\r\n";
 u16 len;
 
+UDPMessage msg;
 
 void task_1()
 {
@@ -31,16 +30,22 @@ void task_1()
 		{
 			uart1.printf("btn long \r\n");
 		}
-		len = tcpServer.recv(recvBuf);
+		len = udp.recv(recvBuf);
 		if(len > 0)
 		{
-			uart1.printf("\r\n==================");
-			uart1.printf("\r\n客户端:%d.%d.%d.%d:%d",tcpServer.remoteIP[0],tcpServer.remoteIP[1],tcpServer.remoteIP[2],tcpServer.remoteIP[3],tcpServer.remotePort);
-			uart1.printf("\r\n数据长度：%d",len);
-			uart1.printf("\r\n数据内容：");
-			uart1.printf((const char*)recvBuf);
+//			uart1.printf("\r\n==================");
+//			uart1.printf("\r\n客户端:%d.%d.%d.%d:%d",udp.remoteIP[0],udp.remoteIP[1],udp.remoteIP[2],udp.remoteIP[3],udp.remotePort);
+//			uart1.printf("\r\n数据长度：%d",len);
+//			uart1.printf("\r\n数据内容：");
+//			uart1.printf((const char*)recvBuf);
 
-			tcpServer.send(start,sizeof(start));
+			msg.len =len;
+			msg.rIP = udp.remoteIP;
+			msg.rPort = udp.remotePort;
+			msg.buf = recvBuf;
+			
+//			udp.send(&msg);
+			deal(recvBuf,len);
 			//tcpServer.send(recvBuf,len);
 			//唤醒任务2开始执行相关动作
 			OS_TaskResume(TASK2_PRIO);

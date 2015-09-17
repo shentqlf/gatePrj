@@ -2,13 +2,14 @@
 #define __START_H
 #include "ebox.h"
 #include "w5500.h"
-#include "tcp.h"
+#include "udp.h"
 #include "button.h"
 #include "os.h"
+#include "ctrpro.h"
 
-#define TASK_1_STK_SIZE 128
-#define TASK_2_STK_SIZE 128
-#define TASK_3_STK_SIZE 128
+#define TASK_1_STK_SIZE 512
+#define TASK_2_STK_SIZE 256
+#define TASK_3_STK_SIZE 512
 #define TASK_4_STK_SIZE 128
 
 
@@ -26,7 +27,8 @@ extern u8 recvBuf[100];
 extern u8 sendBuf[100];
 
 extern W5500 w5500;
-extern TCPSERVER tcpServer;
+extern UDP udp;
+extern UDPMessage msg;
 extern Button btn;
 
 

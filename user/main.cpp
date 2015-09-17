@@ -20,7 +20,7 @@ u8 sendBuf[100] = "jdq1:1\rjdq2:1\rbeep:1\rledx:1";
 ///创建对象////////////////////////////////////////////////////
 USART 		uart1(USART1,PA9,PA10);
 W5500 		w5500(PC13,SPI2,PB13,PB14,PB15,PC14,PC15);
-TCPSERVER tcpServer;
+UDP udp;
 Button btn(PA8,1);
 
 
@@ -32,7 +32,7 @@ Button btn(PA8,1);
   u8 rip[4]={192,168,1,102};/*定义lp变量*/
   u8 ip[6];
 	
-void initTCPServer()
+void initUDPServer()
 {
 	
 	w5500.begin(mac,lip,sub,gw);
@@ -47,7 +47,8 @@ void initTCPServer()
   uart1.printf("GW : %d.%d.%d.%d\r\n", ip[0],ip[1],ip[2],ip[3]);
   uart1.printf("Network is ready.\r\n");
 	
-	tcpServer.begin(SOCKET0,30000);
+	udp.begin(SOCKET0,30000);
+	uart1.printf("udp server is begin on 192.168.1.111,30000");
 }
 void setup()
 {
@@ -55,7 +56,7 @@ void setup()
 	OS_Init();
 	uart1.begin(9600);
 	
-	initTCPServer();
+	initUDPServer();
 	uart1.printf("\r\nuart1 9600 ok!");
 	
 	OS_TaskCreate(task_1,&TASK_1_STK[TASK_1_STK_SIZE-1],TASK1_PRIO);

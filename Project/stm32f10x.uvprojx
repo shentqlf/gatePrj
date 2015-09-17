@@ -782,6 +782,11 @@
               <FileType>8</FileType>
               <FilePath>..\user\app3.cpp</FilePath>
             </File>
+            <File>
+              <FileName>ctrpro.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\user\ctrpro.cpp</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
