@@ -23,14 +23,27 @@ extern STACK_TypeDef TASK_2_STK[TASK_2_STK_SIZE];
 extern STACK_TypeDef TASK_3_STK[TASK_3_STK_SIZE];
 extern STACK_TypeDef TASK_4_STK[TASK_4_STK_SIZE];
 
-extern u8 recvBuf[100];
-extern u8 sendBuf[100];
 
+//全局对象//////////////////////////////
 extern W5500 w5500;
 extern UDP udp;
-extern UDPMessage msg;
 extern Button btn;
+//全局控制对象/////////////
+#define LED PA1
+#define BEEP_PIN PA2
 
+#define JDQ1 PB4
+#define JDQ2 PB5
+
+extern PWM beep;
+//////全局变量/////////////////////////////
+extern u8 connectState;
+extern u8 warningState;
+extern u8 warningTime;
+extern u8 jdq1State;
+extern u8 jdq2State;
+extern u8 recvBuf[100];
+extern UDPMessage msg;
 
 
 #endif

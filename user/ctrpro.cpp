@@ -12,7 +12,7 @@
 
 u8 state = NEEDHEAD;
 
-PRO ctr[MAX];
+PRO ctr[MAX];//十个命令缓冲区，用于多命令处理
 u8 cmdBuf[100];
 
 
