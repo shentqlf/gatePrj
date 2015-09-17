@@ -11,7 +11,6 @@ typedef struct
 }PRO;
 
 extern PRO ctr[10];
-extern 	u8 count;
 void deal(u8 * buf,u8 len);
 
 #endif

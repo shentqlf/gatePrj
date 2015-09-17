@@ -11,6 +11,38 @@ u8 task2count = 0;
 
 PWM beep(BEEP_PIN,36,1000);
 
+PRO* currentPro;
+PRO* getCMD()
+{
+	for(int i =0; i < 10;i ++)
+		{
+			if(ctr[i].flag == 1)
+				return  &ctr[i];
+		}
+	return &ctr[0];
+}
+void exec(PRO* pro)
+{
+	
+		if(pro->flag == 1)
+		{
+			switch(pro->cmd)
+			{
+				case '0':
+					
+					break;
+				case '1':
+					
+					break;
+				
+				default :
+					
+					
+					break;
+		
+			}
+		}
+}
 void task_2()
 {
 	
@@ -23,6 +55,8 @@ void task_2()
 	
   while(1)
 	{
+		currentPro = getCMD();
+		exec(currentPro);
 //		task2count++;
 //		uart1.printf("Task 2 Running!!!,runtimes = %d\r\n",task2count);
 		///////////继电器1////////////////////////////////////////////////
@@ -72,19 +106,19 @@ void task_2()
 			LED->reset();
 			}
 			msg.buf = sendBuf;
-			uart1.printf("\r\n0.flag = %c",ctr[0].flag);
-			uart1.printf("\r\n0.cmd = %c",ctr[0].cmd);
-			uart1.printf("\r\n0.type = %c",ctr[0].type);
-			uart1.printf("\r\n0.type = %c%c%c%c%c\r\n",ctr[0].para[0],ctr[0].para[1],ctr[0].para[2],ctr[0].para[3],ctr[0].para[4]);
-			if(count>=1)
-			count--;
-			uart1.printf("\r\n1.flag = %c",ctr[1].flag);
-			uart1.printf("\r\n1.cmd = %c",ctr[1].cmd);
-			uart1.printf("\r\n1.type = %c",ctr[1].type);
-			uart1.printf("\r\n1.type = %c%c%c%c%c\r\n",ctr[1].para[1],ctr[1].para[1],ctr[1].para[2],ctr[1].para[3],ctr[1].para[4]);
+//			uart1.printf("\r\n0.flag = %c",ctr[0].flag);
+//			uart1.printf("\r\n0.cmd = %c",ctr[0].cmd);
+//			uart1.printf("\r\n0.type = %c",ctr[0].type);
+//			uart1.printf("\r\n0.type = %c%c%c%c%c\r\n",ctr[0].para[0],ctr[0].para[1],ctr[0].para[2],ctr[0].para[3],ctr[0].para[4]);
+//			if(count>=1)
+//			count--;
+//			uart1.printf("\r\n1.flag = %c",ctr[1].flag);
+//			uart1.printf("\r\n1.cmd = %c",ctr[1].cmd);
+//			uart1.printf("\r\n1.type = %c",ctr[1].type);
+//			uart1.printf("\r\n1.type = %c%c%c%c%c\r\n",ctr[1].para[1],ctr[1].para[1],ctr[1].para[2],ctr[1].para[3],ctr[1].para[4]);
 			
-			if(count>=1)
-			count--;
+//			if(count>=1)
+//			count--;
 			
 		//udp.send(&msg);
 		//任务执行完成，挂起
