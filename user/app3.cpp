@@ -8,16 +8,18 @@ float cpu;
 INT16U mem;
 
 u8 xintiaoBuf[] = "$,X,0,1,;";
+	u8 turn = 0;
+	u8 count1 = 0;
+	u8 count2 = 0;
 void task_3()
 {
-	u8 turn,count1;
   while(1)
 	{
 		cpu = OS_GetCPU();
 		if(connectState == 1)
 		{
 			count1++;
-			count1=count1%5;
+			count1=count1%2;
 			if(count1 == 0)
 			{
 				msg.len = sizeof(xintiaoBuf);
@@ -27,13 +29,7 @@ void task_3()
 		}
 		if(warningState  == 1)
 		{ 
-			if(warningTime == 1)
-			{
-				warningState = 0;
-				PB8->write(0);
-				beep.setDuty(0);
 
-			}
 			if(turn == 0)
 			{
 				PB8->write(1);
@@ -45,9 +41,20 @@ void task_3()
 				beep.setDuty(0);
 			
 			}
-			if(warningTime >= 1)
-				warningTime--;
-				turn++;
+			if(warningTime > 0)	
+			{
+				if((warningTime*2 - count2) == 0)
+				{
+					warningState = 0;
+					PB8->write(0);
+					beep.setDuty(0);
+					count2 = 0;
+					turn = 0;
+				}
+				count2++;
+			
+			}
+			turn++;
 			turn = turn%2;
 		}
 //		uart1.printf("cpu = %0.1f%%\r\n",cpu);

@@ -32,6 +32,14 @@ void warning(PRO* p)
 void jdq1(PRO* p)
 {
 		if(p->para[0] == '0')
+			PB9->write(0);
+		else
+			PB9->write(1);
+}
+///¼ÌµçÆ÷2/////////////////////////////////
+void jdq2(PRO* p)
+{
+		if(p->para[0] == '0')
 			PB10->write(0);
 		else
 			PB10->write(1);
@@ -59,10 +67,10 @@ void exec(PRO* pro)
 					warning(pro);
 					break;
 				case '2':
-
+					jdq1(pro);
 					break;
 				case '3':
-
+					jdq2(pro);
 					break;
 				default :
 					
