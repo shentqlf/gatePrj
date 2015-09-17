@@ -44,6 +44,22 @@ void jdq2(PRO* p)
 		else
 			PB10->write(1);
 }
+//ÉèÖÃÊ±¼ä//////////////////////////////////
+#include "stdlib.h"
+void setTime(PRO* p)
+{
+	u8 str[6];
+	u8 i = 0;
+	str[0] = p->para[0];
+	str[1] = p->para[1];
+	str[2] = p->para[2];
+	str[3] = p->para[3];
+	str[4] = p->para[4];
+	str[5] = '\0';
+	warningTime = atof((const char*)str);
+	
+
+}
 PRO* getCMD()
 {
 	for(int i =0; i < 10;i ++)
@@ -71,6 +87,9 @@ void exec(PRO* pro)
 					break;
 				case '3':
 					jdq2(pro);
+					break;				
+				case '4':
+					setTime(pro);
 					break;
 				default :
 					
