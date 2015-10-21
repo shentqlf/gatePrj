@@ -71,7 +71,7 @@ void OS_Start(void)
 //    OSPrioCur = OSPrioHighRdy=i;   // 运行最高优先级任务
     OSPrioCur = OSPrioHighRdy=OS_TASKS;   // 运行一次空闲任务，用于初始化CPU使用率统计信息
 		OS_Tcb_HighRdyP=&TCB[OSPrioHighRdy];
-	OS_EN_TIMELY_SW();
+		OS_EN_TIMELY_SW();
     CPU_OSStart();                 // 具体平台系统启动函数								
 }
 /*
@@ -145,7 +145,7 @@ void OS_TaskResume(PRIO_TypeDef Prio)
 |有关说明:  延时数不得超出TICKS_TypeDef的范围                                           |
 +---------------------------------------------------------------------------------------+
 */
-void OS_TimeDelay(TICKS_TypeDef ticks)
+void OS_DelayTimes(TICKS_TypeDef ticks)
 {
 	INT32U i=0;
 	if(ticks)                           //如果需要延时         
@@ -201,6 +201,7 @@ void OSTimelySw(void)
 		OSCtxSw();
 	}
 }
+
 INT32U OS_GetTick()
 {
 	return OSTick;
@@ -248,10 +249,12 @@ void Idle_Task(void)
 static	uint32_t totalCount= 0 ;
 static	uint32_t count = 0;	
 static float cpuUsage = 0;
+
 void OS_Idlehook(void)
 {
  
 	uint32_t tick;
+
 	if(totalCount == 0)//只在开机的第一次进入执行
 	{
 		OS_NO_TIMELY_SW();//停止调度器

@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -16,7 +16,7 @@ This specification is preliminary and is subject to change at any time without n
 
 //#define TIM_NUM 7
 
-callbackFun gTimxCallbackTable[3];
+callback_fun_type gTimxCallbackTable[3];
 
 //////////////////////////////////////
 
@@ -26,9 +26,18 @@ TIM::TIM(TIM_TypeDef* TIMx)
 	_TIMx = TIMx;
 }
 
-void TIM::begin(uint32_t period,uint32_t prescaler)
+void TIM::begin(uint32_t Frq)
 {
-	config(period,prescaler);
+	uint32_t _period  =0;
+	uint32_t _prescaler = 1;
+	if(Frq>=720000)Frq = 720000;
+	for(;_prescaler <= 0xffff;_prescaler++)
+	{
+		_period = 72000000/_prescaler/Frq;
+		if((0xffff>=_period)&&(_period>=1000))break;
+	}
+
+	base_init(_period,_prescaler);
 }
 void TIM::interrupt(FunctionalState enable)
 {
@@ -45,7 +54,7 @@ void TIM::stop(void)
 {
 	 TIM_Cmd(_TIMx, DISABLE); //????
 }
-void TIM::config(uint16_t period,uint16_t prescaler)
+void TIM::base_init(uint16_t period,uint16_t prescaler)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
@@ -86,15 +95,15 @@ void TIM::config(uint16_t period,uint16_t prescaler)
 	NVIC_Init(&NVIC_InitStructure);
 
 }
-void TIM::setReload(uint16_t Autoreload)
+void TIM::set_reload(uint16_t Autoreload)
 {
 	TIM_SetAutoreload(_TIMx,Autoreload);
 }
-void TIM::clearCount(void)
+void TIM::clear_count(void)
 {
 	_TIMx->CNT = 0;
 }
-void TIM::attachInterrupt(void(*callback)(void))
+void TIM::attach_interrupt(void(*callback)(void))
 {
 	switch((uint32_t)_TIMx)
 	{

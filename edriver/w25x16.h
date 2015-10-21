@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -39,28 +39,30 @@ This specification is preliminary and is subject to change at any time without n
 #define W25X_DeviceID			0xAB 
 #define W25X_ManufactDeviceID	0x90 
 #define W25X_JedecDeviceID		0x9F 
-class W25X:public SPIClASS
+class W25X
 {
 	public:
-		W25X(GPIO* cspin,SPI_TypeDef *spi,GPIO* sck,GPIO* miso,GPIO* mosi):SPIClASS(SPI1,sck,miso,mosi)
+		W25X(GPIO* cspin,SPI* pSPI)
 		{
 			cs = cspin;
+			spi = pSPI;
 		}
-		void begin();
-		void readId(uint16_t* id);
+		void begin(uint8_t dev_num);
+		void read_id(uint16_t* id);
 		void read(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead); 
-		void fastRead(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead);
+		void fast_read(u8* pBuffer,u32 ReadAddr,u16 NumByteToRead);
 		void write(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
 
-		void eraseSector(u32 Dst_Addr);
-		void eraseChip(void);
+		void erase_sector(u32 Dst_Addr);
+		void erase_chip(void);
 
 
 	private:
-		u8 SPI_FLASH_BUF[4096];
-		SPICONFIG spiDevW25x16;
-
+		u8 spi_flash_buf[4096];
+		SPI_CONFIG_TYPE spi_dev_w25x16;
 		GPIO* cs;
+		SPI* spi;
+
 		u8 readSR(void);  
 		void _waitBusy(void);
 		void powerDown(void);	
@@ -69,8 +71,8 @@ class W25X:public SPIClASS
 		void writeEnable(void);
 		void writeDisable(void);
 	
-		void writePage(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
-		void writeNoCheck(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
+		void write_page(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
+		void write_no_check(u8* pBuffer,u32 WriteAddr,u16 NumByteToWrite);
 
 
 };

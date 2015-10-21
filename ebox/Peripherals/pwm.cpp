@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -15,7 +15,6 @@ This specification is preliminary and is subject to change at any time without n
 #include "pwm.h"
 
 
-#define PWM_PIN_NUM 20
 
 
 #define TIMxCH1 0x01
@@ -23,45 +22,29 @@ This specification is preliminary and is subject to change at any time without n
 #define TIMxCH3 0x03
 #define TIMxCH4 0x04
 
-//	PWMpin
-PWM::PWM(GPIO* PWMPin)
+
+	
+PWM::PWM(GPIO*  PWMPin,uint32_t Frq)
 {
 //	if(isPwmPin(PWMpin))
 //	{
 		pwmPin = PWMPin;
-		period = PWM_TIM_PERIOD;
-		prescaler = PWM_TIM_PRESCALER;
+		init_info(PWMPin);
 		
-		initInfo(pwmPin);
-
 		pwmPin->mode(AF_PP);
-		baseInit(period,prescaler);
+		set_frq(Frq);
 
 //	}
 }
-//	
-PWM::PWM(GPIO*  PWMPin,uint16_t Period,uint16_t Prescaler)
+void PWM::base_init(uint16_t Period,uint16_t Prescaler)
 {
-//	if(isPwmPin(PWMpin))
-//	{
-		pwmPin = PWMPin;
-		period = Period;
-		prescaler = Prescaler;
-		initInfo(PWMPin);
-		
-		pwmPin->mode(AF_PP);
-		baseInit(period,prescaler);
-//	}
-}
-void PWM::baseInit(uint16_t Period,uint16_t Prescaler)
-{
-	period = Period;
-	prescaler = Prescaler;
+	period = Period;//更新period
+
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	
 	RCC_APB1PeriphClockCmd(rcc, ENABLE);
-	TIM_TimeBaseStructure.TIM_Period=period-1;//ARR
-	TIM_TimeBaseStructure.TIM_Prescaler=prescaler-1;
+	TIM_TimeBaseStructure.TIM_Period=Period-1;//ARR
+	TIM_TimeBaseStructure.TIM_Prescaler=Prescaler-1;
 	TIM_TimeBaseStructure.TIM_CounterMode=TIM_CounterMode_Up; //
 	TIM_TimeBaseInit(TIMx, &TIM_TimeBaseStructure);
 	
@@ -70,36 +53,36 @@ void PWM::baseInit(uint16_t Period,uint16_t Prescaler)
 	TIM_Cmd(TIMx, ENABLE); //
 
 }	
-void PWM::initInfo(GPIO* PWMPin)
+void PWM::init_info(GPIO* PWMPin)
 {
 	if(PWMPin->port == GPIOA)
 	{
 		switch(PWMPin->pin)
 		{
 			case GPIO_Pin_0:
-				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;irq = TIM2_IRQn;ch = TIMxCH1;
+				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;ch = TIMxCH1;//irq = TIM2_IRQn;
 				break;
 			case GPIO_Pin_1:
-				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;irq = TIM2_IRQn;ch = TIMxCH2;
+				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;ch = TIMxCH2;//irq = TIM2_IRQn;
 				break;
 			case GPIO_Pin_2:
-				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;irq = TIM2_IRQn;ch = TIMxCH3;
+				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;ch = TIMxCH3;//irq = TIM2_IRQn;
 				break;
 			case GPIO_Pin_3:
-				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;irq = TIM2_IRQn;ch = TIMxCH4;
+				TIMx = TIM2;rcc = RCC_APB1Periph_TIM2;ch = TIMxCH4;//irq = TIM2_IRQn;
 				break;
 			
 			case GPIO_Pin_6:
-				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;irq = TIM3_IRQn;ch = TIMxCH1;
+				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;ch = TIMxCH1;//irq = TIM3_IRQn;
 				break;
 			case GPIO_Pin_7:
-				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;irq = TIM3_IRQn;ch = TIMxCH2;
+				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;ch = TIMxCH2;//irq = TIM3_IRQn;
 				break;
 			case GPIO_Pin_10:
-				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;irq = TIM3_IRQn;ch = TIMxCH3;
+				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;ch = TIMxCH3;//irq = TIM3_IRQn;
 				break;
 			case GPIO_Pin_11:
-				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;irq = TIM3_IRQn;ch = TIMxCH4;
+				TIMx = TIM3;rcc = RCC_APB1Periph_TIM3;ch = TIMxCH4;//irq = TIM3_IRQn;
 				break;
 		}
 	}
@@ -108,34 +91,43 @@ void PWM::initInfo(GPIO* PWMPin)
 		switch(PWMPin->pin)
 		{
 			case GPIO_Pin_6:
-				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;irq = TIM4_IRQn;ch = TIMxCH1;
+				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;ch = TIMxCH1;//irq = TIM4_IRQn;
 				break;
 			case GPIO_Pin_7:
-				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;irq = TIM4_IRQn;ch = TIMxCH2;
+				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;ch = TIMxCH2;//irq = TIM4_IRQn;
 				break;
 			case GPIO_Pin_8:
-				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;irq = TIM4_IRQn;ch = TIMxCH3;
+				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;ch = TIMxCH3;//irq = TIM4_IRQn;
 				break;
 			case GPIO_Pin_9:
-				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;irq = TIM4_IRQn;ch = TIMxCH4;
+				TIMx = TIM4;rcc = RCC_APB1Periph_TIM4;ch = TIMxCH4;//irq = TIM4_IRQn;
 				break;
 		}
 	}
 
 }
 
-void PWM::setFrq(uint16_t Period,uint16_t Prescaler)
+
+//pwm的频率 = 72M/72/1000;
+//
+void PWM::set_frq(uint32_t Frq)
 {
-	period = Period;
-	prescaler = Prescaler;
-	baseInit(period,prescaler);
-	setDuty(duty);
+	uint32_t _period  =0;
+	uint32_t _prescaler = 1;
+	if(Frq>=720000)Frq = 720000;
+	for(;_prescaler <= 0xffff;_prescaler++)
+	{
+		_period = 72000000/_prescaler/Frq;
+		if((0xffff>=_period)&&(_period>=1000))break;
+	}
+	
+	base_init(_period,_prescaler);
+	set_duty(duty);
 
 }
 
-
 //duty:0-1000对应0%-100.0%
-void PWM::setDuty(uint16_t Duty)
+void PWM::set_duty(uint16_t Duty)
 {
 
 			duty = Duty;
@@ -148,7 +140,7 @@ void PWM::setDuty(uint16_t Duty)
 			percent = duty/1000.0;
 			
 		  pulse = (uint16_t) (( percent * period ));
-			
+
 			TIM_OCInitTypeDef  TIM_OCInitStructure;
 			
 			TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -174,13 +166,13 @@ void PWM::setDuty(uint16_t Duty)
 		
 }
 //duty:0-1000对应0%-100.0%
-void analogWrite(GPIO* PWMpin, uint16_t Duty) 
+void analog_write(GPIO* PWMpin, uint16_t Duty) 
 {
 //	if(isPwmPin(PWMpin))
 //	{
-			PWM p(PWMpin);
+			PWM p(PWMpin,1000);
 			//p.SetFrq(1000,1);
-			p.setDuty(Duty);
+			p.set_duty(Duty);
 
 //	}
 //	else

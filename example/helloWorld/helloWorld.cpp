@@ -1,13 +1,17 @@
+/*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
+
 
 #include "ebox.h"
 
-
-#define TXPIN PA9
-#define RXPIN PA10
-
-USART uart1(USART1,TXPIN,RXPIN);
-//USART uart2(USART3,PA2,PA3);
-//USART uart3(USART3,PB10,PB11);
 
 void setup()
 {

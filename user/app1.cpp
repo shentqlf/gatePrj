@@ -14,12 +14,13 @@ void task_1()
 		len = udp.recv(recvBuf);
 		if(len > 0)
 		{
+			if(len>80)break;//超出最大命令缓冲区
 			msg.len =len;
 			msg.rIP = udp.remoteIP;
 			msg.rPort = udp.remotePort;
 			msg.buf = recvBuf;		
 			deal(recvBuf,len);
 		}
-		OS_TimeDelay(10);
+		OS_DelayTimes(10);
 	}
 }

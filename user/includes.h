@@ -4,6 +4,7 @@
 #include "w5500.h"
 #include "udp.h"
 #include "button.h"
+#include "ioctr.h"
 #include "os.h"
 #include "ctrpro.h"
 
@@ -27,15 +28,9 @@ extern STACK_TypeDef TASK_4_STK[TASK_4_STK_SIZE];
 //全局对象//////////////////////////////
 extern W5500 w5500;
 extern UDP udp;
-extern Button btn;
+extern BUTTON btn;
 //全局控制对象/////////////
-#define LED PA1
-#define BEEP_PIN PA2
 
-#define JDQ1 PB4
-#define JDQ2 PB5
-
-extern PWM beep;
 //////全局变量/////////////////////////////
 extern u8 connectState;
 extern u8 warningState;

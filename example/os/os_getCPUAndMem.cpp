@@ -1,10 +1,6 @@
 
 #include "ebox.h"
-#include "w5500.h"
-#include "socket.h"
-#include "udp.h"
 #include "os.h"
-USART uart1(USART1,PA9,PA10);
 
 
 #define TASK_1_STK_SIZE 128
@@ -14,8 +10,8 @@ USART uart1(USART1,PA9,PA10);
 
 static STACK_TypeDef TASK_1_STK[TASK_1_STK_SIZE];
 static STACK_TypeDef TASK_2_STK[TASK_2_STK_SIZE];
-static STACK_TypeDef TASK_3_STK[TASK_1_STK_SIZE];
-static STACK_TypeDef TASK_4_STK[TASK_2_STK_SIZE];
+static STACK_TypeDef TASK_3_STK[TASK_3_STK_SIZE];
+static STACK_TypeDef TASK_4_STK[TASK_4_STK_SIZE];
 
 #define TASK1_PRIO 0
 #define TASK2_PRIO 1
@@ -50,7 +46,7 @@ void task_1()
 	while(1)
 	{
 		uart1.printf("Task 1 Running!!!\r\n");
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 }
 void task_2()
@@ -59,7 +55,7 @@ void task_2()
 	{
 		task2count++;
 		uart1.printf("Task 2 Running!!!,runtimes = %d\r\n",task2count);
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 
 }
@@ -72,7 +68,7 @@ void task_3()
 		mem = OS_GetStackMaxUsage(TASK_1_STK,TASK_1_STK_SIZE);
 		uart1.printf("cpu = %0.1f%%\r\n",cpu);
 		uart1.printf("mem = %02d%%\r\n",mem);
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 
 }

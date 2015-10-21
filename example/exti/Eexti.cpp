@@ -1,14 +1,19 @@
+/*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
 
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
 #include "ebox.h"
 
-#define TXPIN PA9
-#define RXPIN PA10
-
-USART uart1(USART1,TXPIN,RXPIN);
 
 uint32_t xx;
 
-EXTIx ex(PA7,EXTI_Trigger_Falling);
+EXTIx ex(&PA8,EXTI_Trigger_Falling);
 
 void exit()
 {
@@ -19,7 +24,9 @@ void setup()
 {
 	eBoxInit();
 	uart1.begin(9600);
+	ex.begin();
 	ex.attachInterrupt(exit);
+	ex.interrupt(ENABLE);
 }
 
 

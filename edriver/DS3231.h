@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentqlf@163.com. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentqlf@163.com.
@@ -19,8 +19,7 @@ This specification is preliminary and is subject to change at any time without n
 #include "ebox.h"
 
 		
-#define DS3231_WriteAddress 0xD0    //器件写地址 
-#define DS3231_ReadAddress  0xD1    //器件读地址
+#define DS3231_ADDRESS 0xD0    //器件写地址 
 #define DS3231_SECOND       0x00    //秒
 #define DS3231_MINUTE       0x01    //分
 #define DS3231_HOUR         0x02    //时
@@ -56,27 +55,27 @@ This specification is preliminary and is subject to change at any time without n
 	 u8 sec;
 	 u8 week;
  
- }DateTime;
+ }date_time_typedef;
 
- class DS3231:public SOFTI2C
+ class DS3231
  {
 	 public:
-			DateTime t;
-			DS3231(GPIO* SDApin,GPIO* SCLpin):SOFTI2C(SDApin,SCLpin){
-			// do nothing;
-			};	
-			void begin(uint32_t speed)
+			date_time_typedef t;
+			DS3231(SOFTI2C* p_soft_i2c)
 			{
-				i2cBegin(speed);
-			};
-			void getDateTime(DateTime *t);
-			void getTime(char* buf);
-			void getDate(char* buf);
-			void setTime(DateTime *t);
+				i2c = p_soft_i2c;
+			};	
+			void begin(uint32_t _speed);
+			void get_date_time(date_time_typedef *t);
+			void get_time(char* buf);
+			void get_date(char* buf);
+			void set_time(date_time_typedef *t);
  
 	 private:
-			uint8_t BcdToDec(uint8_t BCDCode);
-			uint8_t DecToBcd(uint8_t Dec);
+		  SOFTI2C* i2c;
+			uint32_t speed;
+			uint8_t bcd_to_dec(uint8_t bcd_code);
+			uint8_t dec_to_bcd(uint8_t dec);
  };
 
 

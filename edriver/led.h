@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentqlf@163.com. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentqlf@163.com.
@@ -22,17 +22,12 @@ class LED:public _74hc595
 {
 
 	public:
-		LED(GPIO* dataPin, GPIO* sckPin,GPIO* rckPin):_74hc595(dataPin,sckPin,rckPin)
-		{
-			
-		};
-		void ShowTimeHMS(uint8_t hour,uint8_t min,uint8_t sec);
-		void ShowDateTime(uint16_t year,uint8_t month,uint8_t date);
+			LED(GPIO* dataPin, GPIO* sckPin,GPIO* rckPin):_74hc595(dataPin,sckPin,rckPin){};
+				void begin();
+				void show_time_HMS(uint8_t hour,uint8_t min,uint8_t sec);
+				void show_date_time(uint16_t year,uint8_t month,uint8_t date);
 	private:
-		uint8_t _dataPin;
-		uint8_t _sckPin;
-		uint8_t _rckPin;
-		uint8_t _LEDBuf[8];
+		uint8_t led_buf[8];
 
 };
 #endif

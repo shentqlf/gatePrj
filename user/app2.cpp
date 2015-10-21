@@ -1,53 +1,92 @@
 
 #include "includes.h"
 
-#define APPDEBUG
-
-
-
 
 PRO* currentPro;
 
 u8 ackBuf[] = "$,Z,0,0;";
 ////////////////////////////
-void connect(PRO* p)
+int connect(PRO* p)
 {
+	int ret;
 	if(p->para[0] == '0')
+	{
 		connectState = 0;
-	else
+		ret = 0;
+	}
+	else if(p->para[0] == '1')
+	{
 		connectState = 1;
+		ret = 0;
+	}
+	else
+	{
+		ret = -1;
+	}
+	return ret;
 	
 }
 //警告命令处理
 //$,1,0,1,;////////////////////
-void warning(PRO* p)
+int warning(PRO* p)
 {
+	int ret;
 	if(p->para[0] == '0')
-		warningState = 0;
-	else
+	{
+		warningState = 0;	
+		ret = 0;
+	}
+	else if(p->para[0] == '1')
+	{
 		warningState = 1;
-
+		ret = 0;
+	}
+	else
+		ret = -1;
+	return ret;
 }
 ///继电器1/////////////////////////////////
-void jdq1(PRO* p)
+int jdq1(PRO* p)
 {
+	int ret;
 		if(p->para[0] == '0')
-			PB9->write(0);
+		{
+			jdq1_off();
+			ret = 0;
+		}
+		else if(p->para[0] == '1')
+		{
+			jdq1_on();
+			ret = 0;
+		}
 		else
-			PB9->write(1);
+			ret = -1;
+		return ret;
 }
 ///继电器2/////////////////////////////////
-void jdq2(PRO* p)
+int jdq2(PRO* p)
 {
+	int ret;
 		if(p->para[0] == '0')
-			PB10->write(0);
+		{
+			jdq2_off();
+			ret = 0;
+		}
+		else if(p->para[0] == '1')
+		{
+			jdq2_on();
+			ret = 0;
+		}
 		else
-			PB10->write(1);
+			ret = -1;
+		return ret;
 }
+
 //设置时间//////////////////////////////////
 #include "stdlib.h"
-void setTime(PRO* p)
+int setTime(PRO* p)
 {
+	int ret = 0;
 	u8 str[6];
 	u8 i = 0;
 	str[0] = p->para[0];
@@ -58,7 +97,12 @@ void setTime(PRO* p)
 	str[5] = '\0';
 	warningTime = atof((const char*)str);
 	
-
+	flash.write(0x10000,&warningTime,1);
+	flash.read(0x10000,&warningTime,1);
+	uart1.printf("setting:\r\n");
+	uart1.printf("warnning time:%d!\r\n",warningTime);
+	
+	return ret;
 }
 PRO* getCMD()
 {
@@ -67,34 +111,49 @@ PRO* getCMD()
 			if(ctr[i].flag == 1)
 				return  &ctr[i];
 		}
-	return &ctr[0];
+	return 0;
 }
 void exec(PRO* pro)
 {
-	
+	int ret;
 		if(pro->flag == 1)
 		{
 			switch(pro->cmd)
 			{
 				case '0':
-					connect(pro);
-					ackBuf[6] = '1';
+					ret = connect(pro);
+					if(ret == 0)
+						ackBuf[6] = '1';
+					else if(ret == -1)
+						ackBuf[6] = '0';
 					break;
 				case '1':
-					warning(pro);
-					ackBuf[6] = '1';
+					ret = warning(pro);
+					if(ret == 0)
+						ackBuf[6] = '1';
+					else if(ret == -1)
+						ackBuf[6] = '0';
 					break;
 				case '2':
-					jdq1(pro);
-					ackBuf[6] = '1';
+					ret = jdq1(pro);
+					if(ret == 0)
+						ackBuf[6] = '1';
+					else if(ret == -1)
+						ackBuf[6] = '0';
 					break;
 				case '3':
-					jdq2(pro);
-					ackBuf[6] = '1';
+					ret = jdq2(pro);
+					if(ret == 0)
+						ackBuf[6] = '1';
+					else if(ret == -1)
+						ackBuf[6] = '0';
 					break;				
 				case '4':
-					setTime(pro);
-					ackBuf[6] = '1';
+					ret = setTime(pro);
+					if(ret == 0)
+						ackBuf[6] = '1';
+					else if(ret == -1)
+						ackBuf[6] = '0';
 					break;
 				default :
 					
@@ -114,18 +173,11 @@ void exec(PRO* pro)
 void task_2()
 {
 	
-	JDQ1->mode(OUTPUT_PP);
-	JDQ2->mode(OUTPUT_PP);
-	
-	beep.setDuty(0);
-
-	LED->mode(OUTPUT_PP);
-	
   while(1)
 	{
 		currentPro = getCMD();
 		exec(currentPro);
-		OS_TimeDelay(10);
+		OS_DelayTimes(10);
 	}
 
 }

@@ -1,17 +1,22 @@
+/*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
 
 #include "ebox.h"
 
 
-#define TXPIN PA9
-#define RXPIN PA10
 
-USART uart1(USART1,TXPIN,RXPIN);
 
 uint32_t xx;
 uint8_t flag;
-
 TIM timer2(TIM2);
-
 
 void t2it()
 {
@@ -20,18 +25,19 @@ void t2it()
 	{
 		flag = 1;
 		xx = 0;
+		PB8.write(!PB8.read());
 	}
 }
 void setup()
 {
 	eBoxInit();
 	uart1.begin(9600);
+	PB8.mode(OUTPUT_PP);
 	
-	timer2.begin(1000,72);
+	timer2.begin(1000);
 	timer2.interrupt(ENABLE);
-	timer2.attachInterrupt(t2it);
+	timer2.attach_interrupt(t2it);
 	timer2.start();
-	
 }
 
 

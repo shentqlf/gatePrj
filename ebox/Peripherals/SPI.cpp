@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -15,11 +15,10 @@ This specification is preliminary and is subject to change at any time without n
 
 #include "spi.h"
 
-//#define SPI_NUM 3
-uint8_t SPIClASS::currentDevNum = 0;
 
-SPIClASS::SPIClASS(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin)
+SPI::SPI(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin)
 {
+	busy = 0;
 	spi = SPIx;
 	sckPin->mode(AF_PP);
 	mosiPin->mode(AF_PP);
@@ -27,7 +26,7 @@ SPIClASS::SPIClASS(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin)
 	
 };
 
-void SPIClASS::begin(SPICONFIG* spiConfig)
+void SPI::begin(SPI_CONFIG_TYPE* spiConfig)
 {		
 	if(spi == SPI1)
 	{	
@@ -44,11 +43,13 @@ void SPIClASS::begin(SPICONFIG* spiConfig)
 
 	config(spiConfig);
 }
-void SPIClASS::config(SPICONFIG* spiConfig)
+void SPI::config(SPI_CONFIG_TYPE* spiConfig)
 {
 	SPI_InitTypeDef SPI_InitStructure;
 
 	currentDevNum = spiConfig->devNum;
+	
+	
 	SPI_Cmd(spi,DISABLE);
 	
 	SPI_I2S_DeInit(spi);
@@ -76,32 +77,56 @@ void SPIClASS::config(SPICONFIG* spiConfig)
 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
 	}
 	SPI_InitStructure.SPI_BaudRatePrescaler = spiConfig->prescaler;
-	SPI_InitStructure.SPI_FirstBit = spiConfig->bitOrder; 
+	SPI_InitStructure.SPI_FirstBit = spiConfig->bit_order; 
 	SPI_Init(spi,&SPI_InitStructure);
 	SPI_Cmd(spi,ENABLE);
 
 }
 
-uint8_t SPIClASS::readConfig(void)
+uint8_t SPI::read_config(void)
 {
 	return currentDevNum; 
 }
 
-uint8_t SPIClASS::transfer(uint8_t data) 
+
+int8_t SPI::write(uint8_t data)
 {
+  __IO uint8_t dummyByte;
 	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
 	;
 	spi->DR = data;
 	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
 	;
-	return (spi->DR);
-}
+	dummyByte = spi->DR;
 
-void SPIClASS::transfer(uint8_t *data,uint16_t dataln) 
+	return 0;
+}
+int8_t SPI::read(uint8_t* data)
+{
+	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+	;
+	spi->DR = 0xff;
+	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+	;
+	*data = spi->DR;
+	
+	return 0;
+}
+uint8_t SPI::read()
+{
+	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+	;
+	spi->DR = 0xff;
+	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+	;
+	return(spi->DR);
+	
+}
+int8_t SPI::write(uint8_t *data,uint16_t dataln)
 {
 	__IO uint8_t dummyByte;
 	if(dataln == 0)
-		return;
+		return -1;
 	while(dataln--)
 	{
 		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
@@ -111,25 +136,42 @@ void SPIClASS::transfer(uint8_t *data,uint16_t dataln)
 			;
 		dummyByte = spi->DR;
 	}
+	return 0;
 }
-
-
-void SPIClASS::transfer(uint8_t dummyByte,uint8_t *rcvdata,uint16_t dataln) 
+int8_t SPI::read(uint8_t *rcvdata,uint16_t dataln)
 {
 	if(dataln == 0)
-		return;
+		return -1;
 	while(dataln--)
 	{
 		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
 			;
-		spi->DR = dummyByte;
+		spi->DR = 0xff;
 		while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
 			;
 		*rcvdata++ = spi->DR;
 	}
+	return 0;
 }
 
-
+int8_t SPI::take_spi_right(SPI_CONFIG_TYPE* spi_config)
+{
+	while((busy == 1)&&(spi_config->devNum != read_config()))
+		delay_ms(1);
+	if(spi_config->devNum == read_config())
+	{
+		busy = 1;
+		return 0;
+	}
+	config(spi_config);
+	busy = 1;
+	return 0;
+}
+int8_t SPI::release_spi_right(void)
+{
+	busy = 0;
+	return 0;
+}
 
 
 

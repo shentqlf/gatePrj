@@ -1,8 +1,18 @@
+/*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
+
 
 #include "ebox.h"
 #include "w5500.h"
 #include "udp.h"
-USART uart1(USART1,PA9,PA10);
 
   u8 mac[6]={0x00,0x08,0xdc,0x11,0x11,0x11};/*定义Mac变量*/
   u8 lip[4]={192,168,1,111};/*定义lp变量*/
@@ -33,7 +43,7 @@ void setup()
 	eBoxInit();
 	uart1.begin(9600);
 
-	w5500.begin(mac,lip,sub,gw);
+	w5500.begin(2,mac,lip,sub,gw);
 	w5500.attchInterruputEvent(ethEvent);
 	attachEthToSocket(&w5500);
 	

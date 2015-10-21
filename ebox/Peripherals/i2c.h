@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -16,35 +16,47 @@ This specification is preliminary and is subject to change at any time without n
 #define __I2C_H
 
 #include "common.h"
+
 /*
-	1.暂时只支持I2C1
+	1.支持I2C1和I2C2
 	2.暂时不支持remap，后续很快会完成
-	注意：该类可以当做父类被其他类调用，应用历程详见MPU605的例子，也可以单独实例化后调用
 */
 
 class I2C
 {
 
 	public:
-		I2C(I2C_TypeDef* I2Cx,GPIO* SDAPin,GPIO* SCLPin);
-		void 		setSpeed(uint32_t speed);
-		int8_t	writeByte(uint8_t slaveAddress,uint8_t regAddress,uint8_t data);
-		int8_t	writeByte(uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
-		int8_t	readByte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data);
-		int8_t	readByte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
-	protected:
-		void   i2cBegin(uint32_t speed);
+		I2C(I2C_TypeDef* I2Cx,GPIO* SCLPin,GPIO* SDAPin);
+		void			begin(uint32_t speed);
+		void 			config(uint32_t speed);
+		uint32_t	read_config();
+
+		int8_t	write_byte(uint8_t slaveAddress,uint8_t regAddress,uint8_t data);
+		int8_t	write_byte(uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToWrite);
+		int8_t	read_byte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data);
+		int8_t	read_byte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
+	  int8_t	wait_dev_busy(uint8_t slaveAddress);
+	public:
+		int8_t take_i2c_right(uint32_t speed);
+		int8_t release_i2c_right(void);
+
+	private:
 		int8_t start();
 		int8_t stop();
-		int8_t sendNoAck();
-		int8_t sendAck();
+		int8_t send_no_ack();
+		int8_t send_ack();
 
-		int8_t sendByte(uint8_t regData);
-		int8_t send7BitsAddress(uint8_t address);
-		int8_t receiveByte(uint8_t* data);
+		int8_t send_byte(uint8_t regData);
+		int8_t send_7bits_address(uint8_t slaveAddress);
+		int8_t receive_byte(uint8_t* data);
 
 	private:
 		I2C_TypeDef* _I2Cx;
+		GPIO* sda_pin;
+		GPIO* scl_pin;
+		uint32_t _speed;
+		uint8_t busy;
+
 };
 
 
@@ -52,35 +64,48 @@ class I2C
 
 /*
 	1.支持任何IO引脚；
-	注意：1.该类可以当做父类被其他类调用，应用历程详见MPU605的例子，也可以单独实例化后调用。
-				2.该类的speed是由delay_us延时函数控制。略有不准
-				3.speed设置只能为100000，200000,300k,400k。如果不是此值，则会将speed的值直接传递给delay_us.即delay_us(speed);
-				4.初期调试I2C设备建议使用100k。或者大于3的值
+	2.函数接口和硬件I2C完全一样可以互相替代
+	注意：
+				1.该类的speed是由delay_us延时函数控制。略有不准
+				2.speed设置只能为100000，200000,300k,400k。如果不是此值，则会将speed的值直接传递给delay_us.即delay_us(speed);
+				3.初期调试I2C设备建议使用100k。或者大于10的值
 */
 class SOFTI2C 
 {
   public:
-		SOFTI2C(GPIO* SDApin, GPIO* SCLpin);
-		int8_t 		setSpeed(uint32_t speed);
-		int8_t		writeByte(uint8_t slaveAddress,uint8_t regAddress,uint8_t data);
-		int8_t 		writeByte(uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
-		int8_t 		readByte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data);
-		int8_t 		readByte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
+		SOFTI2C(GPIO* SCLpin, GPIO* SDApin);
+		void 		  begin(uint32_t _speed);
+		int8_t 		config(uint32_t _speed);
+		uint32_t	read_config();
+		int8_t		write_byte(uint8_t slaveAddress,uint8_t regAddress,uint8_t data);
+		int8_t 		write_byte(uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToWrite);
+		int8_t 		read_byte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data);
+		int8_t 		read_byte (uint8_t slaveAddress,uint8_t regAddress,uint8_t* data,uint16_t numToRead);
+	  int8_t		wait_busy(uint8_t slaveAddress);
+	public:
+		int8_t take_i2c_right(uint32_t speed);
+		int8_t release_i2c_right(void);
+	
 
 
-  private:
-		GPIO* sdaPin;
-		GPIO* sclPin;
-		uint16_t _delayTimes;
-	protected:
-		void 		i2cBegin(uint32_t speed);
+	private:
 		void 		start();
 		void 		stop();
-		int8_t	waitAck();
-		void 		sendAck();
-		void 		sendNoAck();
-		void 		sendByte(uint8_t Byte);
-		uint8_t receiveByte();
+		int8_t 	send_ack();
+		int8_t 	send_no_ack();
+	
+		int8_t 	send_byte(uint8_t Byte);
+		int8_t	send_7bits_address(uint8_t slaveAddress);
+		uint8_t receive_byte();
+	
+		int8_t	wait_ack();
+	
+  private:
+		GPIO* 		sda_pin;
+		GPIO* 		scl_pin;
+		uint32_t	speed;
+		uint16_t	delay_times;
+		uint8_t 	busy;
 };
 
 #endif

@@ -1,9 +1,19 @@
 /*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
+
+
+/*
 一个简单的命令帧接收示例
 */
 #include "ebox.h"
-
-USART uart3(USART3,PB10,PB11);
 
 
 
@@ -21,7 +31,7 @@ int i;
 void test()
 {
 	uint8_t c;
-	c = uart3.receiveData();
+	c = uart3.receive();
 	switch(state)
 	{
 		case NEEDHEAD:
@@ -53,7 +63,7 @@ void setup()
 	eBoxInit();
 	uart3.begin(9600);
 	uart3.interrupt(ENABLE);
-	uart3.attachInterrupt(test);
+	uart3.attach_interrupt(test);
 }
 
 float x,y;

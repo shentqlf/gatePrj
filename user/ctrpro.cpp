@@ -61,7 +61,18 @@ void deal(u8 * buf,u8 len)
 				}
 				else if(buf[i] != DOT)
 				{
-					cmdBuf[j++] = buf[i];
+					if(j<8)
+						cmdBuf[j] = buf[i];
+					else
+					{
+						//错误帧，直接抛弃所有本次接受的内容
+						state = NEEDHEAD;
+						i = 0;
+						j = 0;
+						count = 0;
+						return;
+					}
+					j++;
 					i++;				
 				}
 				else if(buf[i] == DOT)
@@ -75,7 +86,7 @@ void deal(u8 * buf,u8 len)
 void copycmd(PRO* dec,u8* sour,u8 len)
 {
 	u8 i=0;
-	uart1.printf("c = %d",count);
+	uart1.printf("c = %d\r\n",count);//使用第几个缓冲区
 	dec->flag = 1;
 	dec->cmd = sour[i++];
 	dec->type = sour[i++];

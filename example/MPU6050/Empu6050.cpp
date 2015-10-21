@@ -1,17 +1,13 @@
 
 #include "ebox.h"
+
+
+
+
 #include "mpu6050.h"
 
-#define TXPIN PA9
-#define RXPIN PA10
 
-USART uart1(USART1,TXPIN,RXPIN);
-
-
-
-
-
-MPU6050 mpu(PB7,PB6);
+MPU6050 mpu(&i2c1);
 
 void setup()
 {
@@ -32,11 +28,11 @@ int main(void)
 	
 	while(1)
 	{
-	  mpu.getID(&id);
-		mpu.getData(ACCEL_XOUT_H,tmp,7);
-		x = mpu.getData(ACCEL_XOUT_H);
-		y = mpu.getData(ACCEL_YOUT_H);
-		z = mpu.getData(ACCEL_ZOUT_H);
+	  mpu.get_id(&id);
+		mpu.get_data(ACCEL_XOUT_H,tmp,7);
+		x = mpu.get_data(ACCEL_XOUT_H);
+		y = mpu.get_data(ACCEL_YOUT_H);
+		z = mpu.get_data(ACCEL_ZOUT_H);
 		delay_ms(10);
 		uart1.printf("\r\nid = %d",id);
 		uart1.printf("\r\naccx = %d",tmp[0]);

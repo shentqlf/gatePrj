@@ -1,11 +1,16 @@
+/*
+file   : *.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+*/
+
+//STM32 RUN IN eBox
+
 #include "ebox.h"
-
 #include "math.h"
-
-#define TXPIN PA9
-#define RXPIN PA10
-
-USART uart1(USART1,TXPIN,RXPIN);
 
 	
 void setup()
@@ -27,8 +32,8 @@ int main(void)
 		if(x >= PI)x=0;
 		y = 2000 - (sin(x)+1)*1000;
 		
-		analogWrite(PA7,y);
-		delay_ms(50);
+		analog_write(&PB8,y);
+		delay_ms(10);
 	}
 
 

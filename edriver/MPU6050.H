@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentqlf@163.com. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentqlf@163.com.
@@ -75,18 +75,21 @@ This specification is preliminary and is subject to change at any time without n
 #define	SlaveAddress	0xD0	//IIC写入时的地址字节数据
 
 
-class MPU6050 : public SOFTI2C
+class MPU6050
 {
 	public:
-		 MPU6050(GPIO* SDApin,GPIO* SCLpin):SOFTI2C(SDApin,SCLpin){
-		 // do nothing;
+		 MPU6050(I2C* p_i2c)
+	  {
+		 i2c = p_i2c;
 		 };	
-		void 			begin(uint32_t speed);
-		int16_t 	getData(uint8_t regAddress);
-		int8_t 		getData(uint8_t regAddress,int16_t* buf,uint8_t numToRead);
-		void 			getID(uint8_t* id);
+		void 			begin(uint32_t _speed);
+		int16_t 	get_data(uint8_t regAddress);
+		int8_t 		get_data(uint8_t regAddress,int16_t* buf,uint8_t numToRead);
+		void 			get_id(uint8_t* id);
 
 	private:
+		I2C* i2c;
+	  uint32_t speed;
 		
 	
 };

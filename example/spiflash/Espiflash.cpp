@@ -2,20 +2,16 @@
 #include "ebox.h"
 #include "w25x16.h"
 
-#define TXPIN PA9
-#define RXPIN PA10
-
-USART uart1(USART1,TXPIN,RXPIN);
 
 
-W25X flash(PE5,SPI1,PA5,PA6,PA7);
+W25X flash(&PE5,&spi1);
 
 
 void setup()
 {
 	eBoxInit();
-	uart1.begin(9600);
-	flash.begin();
+	uart3.begin(9600);
+	flash.begin(1);
 }
 
 
@@ -31,23 +27,23 @@ int main(void)
 	 wbuf[i] = i;
 	while(1)
 	{
-		flash.readId(&id);
-		uart1.printf("\r\n==readid=======\r\n");
-		uart1.printf("id = %x",id);
+		flash.read_id(&id);
+		uart3.printf("\r\n==readid=======\r\n");
+		uart3.printf("id = %x",id);
 
-		uart1.printf("\r\n==write&read========\r\n");
+		uart3.printf("\r\n==write&read========\r\n");
 		flash.write(wbuf,0,10);
 		flash.read(buf,0,10);	
 		for(int i=0;i<10;i++)
-		uart1.printf(" %x",buf[i]);
+		uart3.printf(" %x",buf[i]);
 		
-		uart1.printf("\r\n==erase&read========\r\n");
-		flash.eraseSector(0);
+		uart3.printf("\r\n==erase&read========\r\n");
+		flash.erase_sector(0);
 		flash.read(buf,1,10);	
 		for(int i=0;i<10;i++)
-		uart1.printf(" %x",buf[i]);
-		uart1.printf("\r\n=========================\r\n");
-		uart1.printf("\r\n\r\n");
+		uart3.printf(" %x",buf[i]);
+		uart3.printf("\r\n=========================\r\n");
+		uart3.printf("\r\n\r\n");
 		
 		delay_ms(1000);
 	}

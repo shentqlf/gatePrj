@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -14,15 +14,16 @@ This specification is preliminary and is subject to change at any time without n
 */
 #include "rtc.h"
 
-RTCCLASS 	rtc;
-callbackFun rtcCallbackTable[3];//
+RTC_CLASS rtc;
+callback_fun_type rtcCallbackTable[3];//
 
-void RTCCLASS::begin()
+void RTC_CLASS::begin()
 {
+	
 //	if(isConfig() == 0)
 //	{
 		config();
-		setConfigFlag(RTC_CFG_FLAG);
+		set_config_flag(RTC_CFG_FLAG);
 //	}
 //	else
 //	{
@@ -43,7 +44,7 @@ void RTCCLASS::begin()
 //		RTC_WaitForLastTask();			
 //	}
 }
-void RTCCLASS::config(void)
+void RTC_CLASS::config(void)
 {
 	
 	/* Enable PWR and BKP clocks */
@@ -104,18 +105,18 @@ void RTCCLASS::config(void)
 	RTC_WaitForLastTask();
 
 }
-uint8_t RTCCLASS::isConfig(uint16_t configFlag)
+uint8_t RTC_CLASS::is_config(uint16_t configFlag)
 {
 	uint8_t flag = 0;
 	if(BKP_ReadBackupRegister(BKP_DR1) == configFlag)
 		flag = 1;
 	return flag;
 }
-void RTCCLASS::setConfigFlag(uint16_t configFlag)
+void RTC_CLASS::set_config_flag(uint16_t configFlag)
 {
 		BKP_WriteBackupRegister(BKP_DR1, configFlag);
 }
-void RTCCLASS::setCounter(uint32_t count)
+void RTC_CLASS::set_counter(uint32_t count)
 {
 	/* Wait until last write operation on RTC registers has finished */
 	RTC_WaitForLastTask();
@@ -125,7 +126,7 @@ void RTCCLASS::setCounter(uint32_t count)
 	/* Wait until last write operation on RTC registers has finished */
 	RTC_WaitForLastTask();
 }	
-void RTCCLASS::setAlarm(uint32_t count)
+void RTC_CLASS::set_alarm(uint32_t count)
 {
 	/* Wait until last write operation on RTC registers has finished */
 	RTC_WaitForLastTask();
@@ -137,7 +138,7 @@ void RTCCLASS::setAlarm(uint32_t count)
 }	
 	
 
-void RTCCLASS::interrupt(uint32_t bits,FunctionalState x)
+void RTC_CLASS::interrupt(uint32_t bits,FunctionalState x)
 {
 	
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -159,7 +160,7 @@ void RTCCLASS::interrupt(uint32_t bits,FunctionalState x)
 	RTC_ITConfig(bits, x);
 	
 }
-void RTCCLASS::attachInterrupt(uint16_t event, void (*callbackFun)(void))
+void RTC_CLASS::attach_interrupt(uint16_t event, void (*callbackFun)(void))
 {
 	switch(event)
 	{
@@ -175,28 +176,28 @@ void RTCCLASS::attachInterrupt(uint16_t event, void (*callbackFun)(void))
 	}
 }
 
-uint32_t RTCCLASS::getCounter()
+uint32_t RTC_CLASS::get_counter()
 {
 	return RTC_GetCounter();
 };
 
-void RTCCLASS::setTimeHMS(uint8_t h,uint8_t m,uint8_t s)
+void RTC_CLASS::set_time_HMS(uint8_t h,uint8_t m,uint8_t s)
 {
 	uint32_t tmp = 0;
 	tmp = h*3600 + m*60 + s;
-	setCounter(tmp);
+	set_counter(tmp);
 }
-void RTCCLASS::setAlarm(uint8_t h,uint8_t m,uint8_t s)
+void RTC_CLASS::set_alarm(uint8_t h,uint8_t m,uint8_t s)
 {
 	uint32_t tmp = 0;
 	tmp = h*3600 + m*60 + s;
-	setAlarm(tmp);
+	set_alarm(tmp);
 };
 
-void RTCCLASS::getTimeHMS(uint8_t* h,uint8_t* m,uint8_t* s)
+void RTC_CLASS::get_time_HMS(uint8_t* h,uint8_t* m,uint8_t* s)
 {
 	uint32_t tmp = 0;
-	tmp = getCounter() % 0x15180;
+	tmp = get_counter() % 0x15180;
 	*h = (tmp / 3600);
 	*m = (tmp % 3600)/60;
 	*s = (tmp % 3600) %60;

@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -28,14 +28,20 @@ class EXTIx
 {
 	public:
 		EXTIx(GPIO* EXTIPin,EXTITrigger_TypeDef trigger);
-		void attachInterrupt(void (*callbackFun)(void));
+		void begin();
+		void attach_interrupt(void (*callback_fun)(void));
+		void interrupt(FunctionalState enable);
+	
+	
 	private:
-		uint8_t PortSource;
-		uint8_t PinSource;
-		uint32_t ExtiLine;
+		GPIO* 		exti_pin;
+		EXTITrigger_TypeDef _trigger;
+		uint8_t 	port_source;
+		uint8_t 	pin_source;
+		uint32_t 	exti_line;
 		uint8_t irq;
 	
-		void initInfo(GPIO* EXTIPin);
+		void init_info(GPIO* EXTIPin);
 };
 
 #endif

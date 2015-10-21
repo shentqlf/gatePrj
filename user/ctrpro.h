@@ -10,7 +10,7 @@ typedef struct
 	u8 para[5];
 }PRO;
 
-extern PRO ctr[10];
+extern  PRO ctr[10];
 void deal(u8 * buf,u8 len);
 
 #endif

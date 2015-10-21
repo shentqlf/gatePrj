@@ -4,7 +4,7 @@ author : shentq
 version: V1.0
 date   : 2015/7/5
 
-Copyright (c) 2015, eBox by shentq. All Rights Reserved.
+Copyright 2015 shentq. All Rights Reserved.
 
 Copyright Notice
 No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentq.
@@ -40,63 +40,91 @@ typedef struct
 	uint8_t devNum;
 	uint8_t mode;
 	uint16_t prescaler;
-	uint16_t bitOrder;
-}SPICONFIG;
+	uint16_t bit_order;
+}SPI_CONFIG_TYPE;
 
 
 /*
-	1.目前只测试了SPI1，理论支持SPI2和spi3，望网友测试
-	2.该spi功能强大，总线支持同时挂载不同MODE ,SPEED,bitOder的设备
-	3.每一个spi设备应有一个自己的SPICONFIG的配置，以支持该设备的的读写，
-		在读写前需要检测当前spi配置是否的devNum，如果是就跳过config，如果不是
-		则调用config(SPICONFIG* spiConfig);
+	1.目前只测试了SPI1、SPI2，spi3望网友测试
+	2.该spi功能强大，总线支持同时挂载不同MODE ,SPEED,bit_oder的设备
+	3.每一个spi设备应有一个自己的SPI_CONFIG的配置，以支持该设备的的读写，
+		在读写前需要获得SPI的控制权，如果获取不到则一直等待！主要是为了兼容操作系统，
+		如果不使用操作系统也必须加上获得控制权的代码，在是用完SPI后一定要释放SPI总线，
+		如果不释放总线会导致别的SPI设备一直处于等待的状态
 */
 //默认配置 空，只依靠结构体SPICONFIG来初始化
-
-class	SPIClASS 
+class	SPI
 {
 	public:
-		SPIClASS(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin);
+		SPI(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin);
 	
-		void begin (SPICONFIG* spiConfig);
-		void config(SPICONFIG* spiConfig);
-		uint8_t readConfig(void);
+		void begin (SPI_CONFIG_TYPE* SPI_CONFIG_TYPE);
+		void config(SPI_CONFIG_TYPE* SPI_CONFIG_TYPE);
+		uint8_t read_config(void);
 		
-		uint8_t transfer(uint8_t data);
-		void transfer(uint8_t *data,uint16_t dataln);
-		void transfer(uint8_t dummyByte,uint8_t *rcvdata,uint16_t dataln);
-		
-	private:
-		static uint8_t currentDevNum;
-		SPI_TypeDef *spi;
+		int8_t  write(uint8_t data);
+		int8_t  write(uint8_t *data,uint16_t dataln);
+	
+		uint8_t read();
+		int8_t  read(uint8_t* data);
+		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+	public:
+		int8_t take_spi_right(SPI_CONFIG_TYPE* spi_config);
+		int8_t release_spi_right(void);
 
+
+	
+	private:
+	  uint8_t currentDevNum;
+		SPI_TypeDef *spi;
+		uint8_t busy;
 };
 /*
 	注意：1.该类的SPI_CLOCK_DIV是由delay_us延时函数控制。略有不准，比硬件SPI会慢很多
-				2.speed设置只能为SPI_CLOCK_DIVx。如果不是此值，则会将SPI_CLOCK_DIV的值直接传递给delay_us.即delay_us(SPICONFIG->prescaler);
+				2.speed设置只能为SPI_CLOCK_DIVx。如果不是此值，则会将SPI_CLOCK_DIV的值直接传递给delay_us.即delay_us(SPI_CONFIG_TYPE->prescaler);
 				3.初期调试I2C设备建议使用SPI_CLOCK_DIV256。
+				4.函数接口和硬件SPI完全一样可以互相替换。
 */
 class SOFTSPI
 {
 	public:
 		SOFTSPI(GPIO* SCKPin,GPIO* MISOPin,GPIO* MOSIPin);
 	
-		void 		begin(SPICONFIG* spiConfig);
-	  void 		config(SPICONFIG* spiConfig);
-		uint8_t readConfig(void);
+		void 		begin(SPI_CONFIG_TYPE* spiConfig);
+	  void 		config(SPI_CONFIG_TYPE* spiConfig);
+		uint8_t read_config(void);
+		
+		int8_t  write(uint8_t data);
+		int8_t  write(uint8_t *data,uint16_t dataln);
 	
-		uint8_t transfer(uint8_t data);
+		uint8_t read();
+		int8_t  read(uint8_t* data);
+		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+	public:
+		int8_t take_spi_right(SPI_CONFIG_TYPE* spiConfig);
+		int8_t release_spi_right(void);
+
 
 	private:
-		GPIO* 	sckPin;
-		GPIO*		mosiPin;
-		GPIO*		misoPin;
+		GPIO* 	sck_pin;
+		GPIO*		mosi_pin;
+		GPIO*		miso_pin;
 			
 		uint8_t mode;	
-		uint8_t bitOrder;
-		uint8_t spidelay;
+		uint8_t bit_order;
+		uint8_t spi_delay;
 	
-		static uint8_t currentDevNum;
+		uint8_t currentDevNum;
+		uint8_t busy;
+	
+		uint8_t transfer0(uint8_t data);
+		uint8_t transfer1(uint8_t data);
+		uint8_t transfer2(uint8_t data);
+		uint8_t transfer3(uint8_t data);
+		uint8_t transfer(uint8_t data);
+	
+
+	
 };
 
 #endif

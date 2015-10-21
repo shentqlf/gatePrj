@@ -1,3 +1,18 @@
+/*
+file   : w25x16.cpp
+author : shentq
+version: V1.0
+date   : 2015/7/5
+
+Copyright 2015 shentq. All Rights Reserved.
+
+Copyright Notice
+No part of this software may be used for any commercial activities by any form or means, without the prior written consent of shentqlf@163.com.
+
+Disclaimer
+This specification is preliminary and is subject to change at any time without notice. shentqlf@163.com assumes no responsibility for any errors contained herein.
+*/
+
 #ifndef __W5500_H
 #define __W5500_H
 #include "ebox.h"
@@ -14,18 +29,18 @@ static u8 I_STATUS[MAX_SOCK_NUM];
 static u16 SSIZE[MAX_SOCK_NUM]; /**< Max Tx buffer size by each channel */
 static u16 RSIZE[MAX_SOCK_NUM]; /**< Max Rx buffer size by each channel */
 
-class W5500:public SPIClASS
+class W5500
 {
 	public:
-		W5500(GPIO* cspin,SPI_TypeDef *spi,GPIO* sck,GPIO* miso,GPIO* mosi,GPIO* rstpin,GPIO* intpin):SPIClASS(spi,sck,miso,mosi)
+		W5500(GPIO* cspin,GPIO* rstpin,GPIO* intpin,SPI* pSPI)
 		{
 			cs = cspin;
 		  rstPin = rstpin;
 			intPin = intpin;
-			
+			spi = pSPI;
 
 		}
-		void begin(u8* mac,u8* ip,u8* subnet,u8* gateway);
+		void begin(uint8_t dev_num,u8* mac,u8* ip,u8* subnet,u8* gateway);
 		void reset();
 
 		u8 getISR(u8 s);
@@ -96,16 +111,18 @@ class W5500:public SPIClASS
 		u16  read(u32 addrbsb,u8* buf, u16 len);
 		void sysinit( u8 * tx_size, u8 * rx_size  );
 		
-		void attchInterruputEvent(void (*callbackFun)(void))
+		void attch_interruputEvent(void (*callbackFun)(void))
 		{
 			EXTIx ex(intPin,EXTI_Trigger_Falling);
-			ex.attachInterrupt(callbackFun);
+			ex.attach_interrupt(callbackFun);
 		}
 	private:
 		GPIO* cs;
 		GPIO* rstPin;
 		GPIO* intPin;
-		SPICONFIG spiDevW5500;
+		SPI_CONFIG_TYPE spiDevW5500;
+		SPI* spi;
+	
 	
 };
 #define SOCKET0 0

@@ -1,6 +1,9 @@
 
 
-
+/***********************************
+功能说明：
+此任务完成报警任务的执行，心跳的维护
+************************************/
 #include "ebox.h"
 #include "includes.h"
 
@@ -11,6 +14,7 @@ u8 xintiaoBuf[] = "$,X,0,1,;";
 	u8 turn = 0;
 	u8 count1 = 0;
 	u8 count2 = 0;
+	
 void task_3()
 {
   while(1)
@@ -32,22 +36,24 @@ void task_3()
 
 			if(turn == 0)
 			{
-				PB8->write(1);
-				beep.setDuty(500);
+				led_on();
+				beep_on();			
 			}
 			else
 			{
-				PB8->write(0);
-				beep.setDuty(0);
-			
+				led_off();
+				beep_off();
+
 			}
 			if(warningTime > 0)	
 			{
 				if((warningTime*2 - count2) == 0)
 				{
 					warningState = 0;
-					PB8->write(0);
-					beep.setDuty(0);
+					
+					led_off();
+					beep_off();
+	
 					count2 = 0;
 					turn = 0;
 				}
@@ -66,7 +72,7 @@ void task_3()
 //		uart1.printf("task2：mem = %02d%%\r\n",mem);
 //		mem = OS_GetStackMaxUsage(TASK_3_STK,TASK_3_STK_SIZE);
 //		uart1.printf("task3：mem = %02d%%\r\n",mem);
-		OS_TimeDelay(500);
+		OS_DelayTimes(500);
 	}
 
 }

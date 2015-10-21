@@ -25,12 +25,9 @@ void task_3();
   u8 rip[4]={192,168,1,102};/*定义lp变量*/
   u8 ip[6];
 ///创建对象////////////////////////////////////////////////////
-USART 		uart1(USART1,PA9,PA10);
-W5500 		w5500(PC13,SPI2,PB13,PB14,PB15,PC14,PC15);
+W5500 w5500(&PC13,&PC14,&PC15,&spi2);
 UDP udp;
-Button btn(PA8,1);	
-
-PWM beep(BEEP_PIN,36,1000);
+BUTTON	btn(&PA8,1);	
 
 /////////全局变量///////////////////////////////////////////////////////////	
 u8 connectState=0;//链接状态
@@ -44,10 +41,10 @@ UDPMessage msg;//udp发送帧结构
 	
 void initUDPServer()
 {
-	
-	w5500.begin(mac,lip,sub,gw);
-	attachEthToSocket(&w5500);
+	w5500.begin(2,mac,lip,sub,gw);
+	attach_eth_to_socket(&w5500);
   w5500.getMAC (ip);
+	uart1.printf("======net config=======\r\n");
   uart1.printf("mac : %02x.%02x.%02x.%02x.%02x.%02x\r\n", ip[0],ip[1],ip[2],ip[3],ip[4],ip[5]);
   w5500.getIP (ip);
   uart1.printf("IP : %d.%d.%d.%d\r\n", ip[0],ip[1],ip[2],ip[3]);
@@ -55,22 +52,36 @@ void initUDPServer()
   uart1.printf("mask : %d.%d.%d.%d\r\n", ip[0],ip[1],ip[2],ip[3]);
   w5500.getGateway(ip);
   uart1.printf("GW : %d.%d.%d.%d\r\n", ip[0],ip[1],ip[2],ip[3]);
-  uart1.printf("Network is ready.\r\n");
 	
 	udp.begin(SOCKET0,30000);
-	uart1.printf("udp server is begin on 192.168.1.111,30000");
+	uart1.printf("udp server is begin on 192.168.1.111,30000\r\n");
+	uart1.printf("=======================\r\n");
 }
 void setup()
 {
-	eBoxInit();
+	ebox_init();
 	OS_Init();
-	uart1.begin(9600);
 	
+	uart1.begin(9600);
+	uart1.printf("\r\nuart1 9600 ok!\r\n");
+	
+	io_ctr_init();
+	uart1.printf("io control init ok!\r\n");
+
 	initUDPServer();
-	uart1.printf("\r\nuart1 9600 ok!");
-	PB8->mode(OUTPUT_PP);
-	PB9->mode(OUTPUT_PP);
-	PB10->mode(OUTPUT_PP);
+	uart1.printf("net init ok!\r\n");
+	
+	flash.read(0x10000,&warningTime,1);
+	
+	if(warningTime == 0xff)
+		warningTime = 10;
+		flash.write(0x10000,&warningTime,1);
+	flash.read(0x10000,&warningTime,1);
+	
+	uart1.printf("setting:\r\n");
+	uart1.printf("warnning time:%d!\r\n",warningTime);
+
+
 	
 	OS_TaskCreate(task_1,&TASK_1_STK[TASK_1_STK_SIZE-1],TASK1_PRIO);
 	OS_TaskCreate(task_2,&TASK_2_STK[TASK_2_STK_SIZE-1],TASK2_PRIO);
