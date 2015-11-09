@@ -31,6 +31,12 @@ void io_ctr_init()
 	
 	beep.set_duty(0);
 	beep_test.set_duty(0);
+	
+	led_on();
+	beep_on();
+	delay_ms(100);
+	led_off();
+	beep_off();
 }
 void led_on()
 {

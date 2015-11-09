@@ -31,24 +31,31 @@ int connect(PRO* p)
 int warning(PRO* p)
 {
 	int ret;
-	if(p->para[0] == '0')
+	if(connectState == 1)
 	{
-		warningState = 0;	
-		ret = 0;
-	}
-	else if(p->para[0] == '1')
-	{
-		warningState = 1;
-		ret = 0;
+		if(p->para[0] == '0')
+		{
+			warningState = 0;	
+			ret = 0;
+		}
+		else if(p->para[0] == '1')
+		{
+			warningState = 1;
+			ret = 0;
+		}
+		else
+			ret = -1;
 	}
 	else
-		ret = -1;
+		ret = -2;
 	return ret;
 }
 ///继电器1/////////////////////////////////
 int jdq1(PRO* p)
 {
 	int ret;
+	if(connectState == 1)
+	{
 		if(p->para[0] == '0')
 		{
 			jdq1_off();
@@ -61,12 +68,18 @@ int jdq1(PRO* p)
 		}
 		else
 			ret = -1;
+	}
+	else
+		ret = -2;
 		return ret;
 }
 ///继电器2/////////////////////////////////
 int jdq2(PRO* p)
 {
 	int ret;
+	if(connectState == 1)
+	{
+
 		if(p->para[0] == '0')
 		{
 			jdq2_off();
@@ -79,6 +92,9 @@ int jdq2(PRO* p)
 		}
 		else
 			ret = -1;
+	}
+	else
+		ret = -2;
 		return ret;
 }
 
@@ -113,6 +129,24 @@ PRO* getCMD()
 		}
 	return 0;
 }
+void ack(int ret)
+{
+	switch(ret)
+	{
+		case 0://参数正常
+			ackBuf[6] = '0';
+		break;
+		case -1://参数异常
+			ackBuf[6] = '1';
+		break;
+		case -2://未连接
+			ackBuf[6] = '2';
+		break;
+		default ://未知错误
+			ackBuf[6] = '9';
+		break;
+	}
+}
 void exec(PRO* pro)
 {
 	int ret;
@@ -122,45 +156,24 @@ void exec(PRO* pro)
 			{
 				case '0':
 					ret = connect(pro);
-					if(ret == 0)
-						ackBuf[6] = '1';
-					else if(ret == -1)
-						ackBuf[6] = '0';
 					break;
 				case '1':
 					ret = warning(pro);
-					if(ret == 0)
-						ackBuf[6] = '1';
-					else if(ret == -1)
-						ackBuf[6] = '0';
 					break;
 				case '2':
 					ret = jdq1(pro);
-					if(ret == 0)
-						ackBuf[6] = '1';
-					else if(ret == -1)
-						ackBuf[6] = '0';
 					break;
 				case '3':
 					ret = jdq2(pro);
-					if(ret == 0)
-						ackBuf[6] = '1';
-					else if(ret == -1)
-						ackBuf[6] = '0';
 					break;				
 				case '4':
 					ret = setTime(pro);
-					if(ret == 0)
-						ackBuf[6] = '1';
-					else if(ret == -1)
-						ackBuf[6] = '0';
 					break;
 				default :
-					
-					ackBuf[6] = '0';
+					ret = -9;
 					break;
-		
 			}
+			ack(ret);
 			ackBuf[4] = pro->cmd;
 			msg.len =sizeof(ackBuf);
 			msg.buf = ackBuf;
@@ -176,7 +189,8 @@ void task_2()
   while(1)
 	{
 		currentPro = getCMD();
-		exec(currentPro);
+		if(currentPro != 0)
+			exec(currentPro);
 		OS_DelayTimes(10);
 	}
 

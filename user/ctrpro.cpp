@@ -24,8 +24,8 @@ void copycmd(PRO* dec,u8* sour,u8 len);
 void deal(u8 * buf,u8 len)
 {
 	u8 i = 0;
-	for(int i = 0;i< 8;i++)
-	cmdBuf[i] = 0;
+	for(int k = 0;k< 100;k++)
+	cmdBuf[k] = 0;
 	while(i<len)
 	{
 		
@@ -47,6 +47,11 @@ void deal(u8 * buf,u8 len)
 				{
 					i++;
 					state = NEEDPARA;
+				}
+				else
+				{
+					state = NEEDHEAD;
+					i++;
 				}
 				break;
 			case NEEDPARA:

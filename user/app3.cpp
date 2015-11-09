@@ -10,7 +10,7 @@
 float cpu;
 INT16U mem;
 
-u8 xintiaoBuf[] = "$,X,0,1,;";
+u8 xintiaoBuf[] = "$,X,0,0,;";
 	u8 turn = 0;
 	u8 count1 = 0;
 	u8 count2 = 0;
