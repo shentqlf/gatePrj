@@ -63,6 +63,12 @@ void task_3()
 			turn++;
 			turn = turn%2;
 		}
+        else
+        {
+            	led_off();
+				beep_off();
+
+        }
 //		uart1.printf("cpu = %0.1f%%\r\n",cpu);
 //		
 //		
