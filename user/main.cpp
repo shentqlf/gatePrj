@@ -81,6 +81,12 @@ void setup()
 	uart1.printf("setting:\r\n");
 	uart1.printf("warnning time:%d!\r\n",warningTime);
 
+    led_on();
+    beep_on();	
+    delay_ms(100);    
+    led_off();
+    beep_off();
+
 
 	
 	OS_TaskCreate(task_1,&TASK_1_STK[TASK_1_STK_SIZE-1],TASK1_PRIO);
