@@ -34,7 +34,7 @@ typedef struct
 /******************全局变量声明***************/
 
 #define OS_TICKS_PER_SEC  1000    // 设置一秒内的时钟节拍数             
-#define OS_TASKS		  3			 			// 设定运行任务的数量,不包含空闲任务 
+#define OS_TASKS		  4			 			// 设定运行任务的数量,不包含空闲任务 
 
 
 extern INT32U OSTick;

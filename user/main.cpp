@@ -6,6 +6,7 @@
 void task_1();
 void task_2();
 void task_3();
+void task_4();
 
 
  STACK_TypeDef TASK_1_STK[TASK_1_STK_SIZE];
@@ -74,24 +75,39 @@ void setup()
 	flash.read(0x10000,&warningTime,1);
 	
 	if(warningTime == 0xff)
+    {
 		warningTime = 10;
 		flash.write(0x10000,&warningTime,1);
-	flash.read(0x10000,&warningTime,1);
-	
-	uart1.printf("setting:\r\n");
-	uart1.printf("warnning time:%d!\r\n",warningTime);
+    }
+	uart1.printf("settings:\r\n");
+	uart1.printf("warnning time =:%d!\r\n",warningTime);
+    
+    
+	flash.read(0x10010,&host_state,1);
+    if(host_state == 0xff)
+    {
+        host_state = 1;
+		flash.write(0x10010,&warningTime,1);
+    }
+    
+	uart1.printf("host left or right=:%d!\r\n",host_state);
 
-    led_on();
-    beep_on();	
-    delay_ms(100);    
-    led_off();
-    beep_off();
 
+    for(int i = 0; i < 2; i++)
+    {
+        led_on();
+        beep_on();	
+        delay_ms(200);    
+        led_off();
+        beep_off();    
+        delay_ms(200);    
+    }
 
 	
 	OS_TaskCreate(task_1,&TASK_1_STK[TASK_1_STK_SIZE-1],TASK1_PRIO);
 	OS_TaskCreate(task_2,&TASK_2_STK[TASK_2_STK_SIZE-1],TASK2_PRIO);
 	OS_TaskCreate(task_3,&TASK_3_STK[TASK_3_STK_SIZE-1],TASK3_PRIO);
+	OS_TaskCreate(task_4,&TASK_4_STK[TASK_4_STK_SIZE-1],TASK4_PRIO);
 	OS_Start();
 	
 	

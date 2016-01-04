@@ -2,6 +2,7 @@
 
 /***********************************
 功能说明：
+此任务执行命令处理结果
 此任务完成报警任务的执行，心跳的维护
 ************************************/
 #include "ebox.h"
@@ -47,7 +48,7 @@ void task_3()
 			}
 			if(warningTime > 0)	
 			{
-				if((warningTime*2 - count2) == 0)
+				if(warningTime*2 < count2)
 				{
 					warningState = 0;
 					

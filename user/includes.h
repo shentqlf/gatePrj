@@ -39,6 +39,7 @@ extern u8 jdq1State;
 extern u8 jdq2State;
 extern u8 recvBuf[100];
 extern UDPMessage msg;
+extern u8 host_state;//主机在左边还是右边
 
 
 #endif

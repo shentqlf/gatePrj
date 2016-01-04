@@ -91,7 +91,7 @@ void deal(u8 * buf,u8 len)
 void copycmd(PRO* dec,u8* sour,u8 len)
 {
 	u8 i=0;
-	uart1.printf("c = %d\r\n",count);//使用第几个缓冲区
+	uart1.printf("cmd location = %d\r\n",count);//使用第几个缓冲区
 	dec->flag = 1;
 	dec->cmd = sour[i++];
 	dec->type = sour[i++];

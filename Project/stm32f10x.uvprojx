@@ -783,6 +783,11 @@
               <FilePath>..\user\app3.cpp</FilePath>
             </File>
             <File>
+              <FileName>app4.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\user\app4.cpp</FilePath>
+            </File>
+            <File>
               <FileName>ctrpro.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\user\ctrpro.cpp</FilePath>

@@ -1,4 +1,6 @@
-
+/*
+此任务并行处理接收到的命令
+*/
 #include "includes.h"
 
 
@@ -8,7 +10,7 @@ u8 ackBuf[] = "$,Z,0,0;";
 ////////////////////////////
 int connect(PRO* p)
 {
-	int ret;
+	int ret = 0;
 	if(p->para[0] == '0')
 	{
 		connectState = 0;
@@ -30,7 +32,7 @@ int connect(PRO* p)
 //$,1,0,1,;////////////////////
 int warning(PRO* p)
 {
-	int ret;
+	int ret = 0;
 	if(connectState == 1)
 	{
 		if(p->para[0] == '0')
@@ -53,7 +55,7 @@ int warning(PRO* p)
 ///继电器1/////////////////////////////////
 int jdq1(PRO* p)
 {
-	int ret;
+	int ret = 0;
 	if(connectState == 1)
 	{
 		if(p->para[0] == '0')
@@ -76,7 +78,7 @@ int jdq1(PRO* p)
 ///继电器2/////////////////////////////////
 int jdq2(PRO* p)
 {
-	int ret;
+	int ret = 0;
 	if(connectState == 1)
 	{
 
@@ -120,6 +122,41 @@ int setTime(PRO* p)
 	
 	return ret;
 }
+int set_host_left_right(PRO* p)
+{
+	int ret = 0;
+	if(connectState == 1)
+	{
+
+		if(p->para[0] == '0')
+		{
+			host_state = 0;
+            flash.write(0x10010,&host_state,1);
+            flash.read(0x10010,&host_state,1);
+            uart1.printf("setting:\r\n");
+            uart1.printf("host :%d!\r\n",host_state);
+
+			ret = 0;
+		}
+		else if(p->para[0] == '1')
+		{
+			host_state = 1;
+            flash.write(0x10010,&host_state,1);
+            flash.read(0x10010,&host_state,1);
+            uart1.printf("setting:\r\n");
+            uart1.printf("host :%d!\r\n",host_state);
+			ret = 0;
+		}
+		else
+			ret = -1;
+	}
+	else
+		ret = -2;
+		return ret;
+    
+    
+}
+
 PRO* getCMD()
 {
 	for(int i =0; i < 10;i ++)
@@ -169,8 +206,11 @@ void exec(PRO* pro)
 				case '4':
 					ret = setTime(pro);
 					break;
+                case '6':
+                    ret = set_host_left_right(pro);
+                    break;
 				default :
-					ret = -9;
+					ret = 9;
 					break;
 			}
 			ack(ret);
