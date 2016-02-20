@@ -188,7 +188,7 @@ void USART::printf_length(const char *str,uint16_t length)
             (0 <<  1) | // 是否允许传输完成中断
             (1);        // 通道开启
 	#else
-		putString(str,length);
+		put_string(str,length);
 	#endif
 }
 void USART::printf(const char* fmt,...)
@@ -238,7 +238,7 @@ void USART::printf(const char* fmt,...)
 //		DMA_Cmd(_DMA1_Channelx,ENABLE);  
 	}
 	#else
-		putString(send_buf);
+		put_string(send_buf);
 	#endif
 	
 }

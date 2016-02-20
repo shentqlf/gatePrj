@@ -32,7 +32,7 @@
 #define VAR_5_NUM_OUT       0X56
 
 
-
+void dwin_init();
 void disp_item(uint16_t item);
 void set_var_u16(uint16_t reg,uint16_t data);
 void set_var_u32(uint16_t reg,uint32_t data);

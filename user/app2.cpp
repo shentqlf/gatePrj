@@ -106,22 +106,33 @@ int jdq2(PRO* p)
 #include "stdlib.h"
 int setTime(PRO* p)
 {
-	int ret = 0;
-	u8 str[6];
-	u8 i = 0;
-	str[0] = p->para[0];
-	str[1] = p->para[1];
-	str[2] = p->para[2];
-	str[3] = p->para[3];
-	str[4] = p->para[4];
-	str[5] = '\0';
-	warningTime = atof((const char*)str);
-	
-	flash.write(0x10000,&warningTime,1);
-	flash.read(0x10000,&warningTime,1);
-	uart1.printf("setting:\r\n");
-	uart1.printf("warnning time:%d!\r\n",warningTime);
-	
+    int ret = 0;
+    if(connectState == 1)
+	{
+        if(p->para[0] < '0' || p->para[0] > '9')
+            return -1;
+        for(int j = 0; j < 5; j++)
+        {
+            if(p->para[j] < '0' || p->para[j] > '9')
+                p->para[j] = '\0';
+        }
+        u8 str[6];
+        u8 i = 0;
+        str[0] = p->para[0];
+        str[1] = p->para[1];
+        str[2] = p->para[2];
+        str[3] = p->para[3];
+        str[4] = p->para[4];
+        str[5] = '\0';
+        warningTime = atof((const char*)str);
+        
+        flash.write(0x10000,&warningTime,1);
+        flash.read(0x10000,&warningTime,1);
+        uart1.printf("setting:\r\n");
+        uart1.printf("warnning time:%d!\r\n",warningTime);
+    }
+    else
+        ret = -2;	
 	return ret;
 }
 int set_host_left_right(PRO* p)
@@ -157,6 +168,127 @@ int set_host_left_right(PRO* p)
 		return ret;
     
     
+}
+
+int set_disp_mode(PRO* p)
+{
+	int ret = 0;
+	if(connectState == 1)
+	{
+
+		if(p->para[0] == '0')
+		{
+			disp_mode = 0;
+            disp_item(PIC_0_START);
+			ret = 0;
+		}
+		else if(p->para[0] == '1')
+		{
+			disp_mode = 1;
+            disp_item(PIC_3_ENTER);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_3_NUM_ENTER,num_of_enter);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_5_NUM_ENTER,num_of_enter);
+            OS_DelayTimes(1);
+			ret = 0;
+		}
+		else if(p->para[0] == '2')
+		{
+			disp_mode = 2;
+            disp_item(PIC_2_OUT);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_2_NUM_OUT,num_of_out);
+            OS_DelayTimes(1);
+            set_var_u32(VAR_5_NUM_OUT,num_of_out);
+            OS_DelayTimes(1);
+			ret = 0;
+		}
+		else if(p->para[0] == '3')
+		{
+			disp_mode = 3;
+            disp_item(PIC_5_ENTER_OUT);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_3_NUM_ENTER,num_of_enter);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_5_NUM_ENTER,num_of_enter);
+            OS_DelayTimes(1);
+            set_var_u16(VAR_2_NUM_OUT,num_of_out);
+            OS_DelayTimes(1);
+            set_var_u32(VAR_5_NUM_OUT,num_of_out);
+            OS_DelayTimes(1);
+			ret = 0;
+		}
+		else
+			ret = -1;
+	}
+	else
+		ret = -2;
+	return ret;
+}
+int set_num_enter_mode(PRO* p)
+{
+	int ret = 0;
+	if(connectState == 1)
+	{
+        u8 str[6];
+        u8 i = 0;
+        if(p->para[0] < '0' || p->para[0] > '9')
+            return -1;
+        for(int j = 0; j < 5; j++)
+        {
+            if(p->para[j] < '0' || p->para[j] > '9')
+                str[j] = '\0';
+        }
+        str[0] = p->para[0];
+        str[1] = p->para[1];
+        str[2] = p->para[2];
+        str[3] = p->para[3];
+        str[4] = p->para[4];
+        str[5] = '\0';
+        num_of_enter = atof((const char*)str);
+        
+        set_var_u16(VAR_3_NUM_ENTER,num_of_enter);
+        set_var_u16(VAR_5_NUM_ENTER,num_of_enter);
+        uart1.printf("num of enter:%d!\r\n",num_of_enter);
+        
+        return ret;
+	}
+	else
+		ret = -2;
+	return ret;
+}
+int set_num_out_mode(PRO* p)
+{
+	int ret = 0;
+	if(connectState == 1)
+	{
+        u8 str[6];
+        u8 i = 0;
+        if(p->para[0] < '0' || p->para[0] > '9')
+            return -1;
+        for(int j = 0; j < 5; j++)
+        {
+            if(p->para[j] < '0' || p->para[j] > '9')
+                str[j] = '\0';
+        }
+        str[0] = p->para[0];
+        str[1] = p->para[1];
+        str[2] = p->para[2];
+        str[3] = p->para[3];
+        str[4] = p->para[4];
+        str[5] = '\0';
+        num_of_out = atof((const char*)str);
+        
+        set_var_u16(VAR_2_NUM_OUT,num_of_out);
+        set_var_u32(VAR_5_NUM_OUT,num_of_out);
+        uart1.printf("num of OUT:%d!\r\n",num_of_out);
+        
+        return ret;
+	}
+	else
+		ret = -2;
+	return ret;
 }
 
 PRO* getCMD()
@@ -210,6 +342,15 @@ void exec(PRO* pro)
 					break;
                 case '6':
                     ret = set_host_left_right(pro);
+                    break;
+                case '7':
+                    ret = set_disp_mode(pro);
+                    break;
+                case '8':
+                    ret = set_num_enter_mode(pro);
+                    break;
+                case '9':
+                    ret = set_num_out_mode(pro);
                     break;
 				default :
 					ret = 9;

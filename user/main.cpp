@@ -19,11 +19,11 @@ void task_4();
 ////////////////////////////////////////////////////////////////////
 
   u8 mac[6]={0x00,0x08,0xdc,0x11,0x11,0x11};/*定义Mac变量*/
-  u8 lip[4]={192,168,0,211};/*定义lp变量*/
+  u8 lip[4]={192,168,1,211};/*定义lp变量*/
   u8 sub[4]={255,255,255,0};/*定义subnet变量*/
   u8 gw[4]={192,168,1,1};/*定义gateway变量*/
 	
-  u8 rip[4]={192,168,1,102};/*定义lp变量*/
+  u8 rip[4]={192,168,1,112};/*定义lp变量*/
   u8 ip[6];
 ///创建对象////////////////////////////////////////////////////
 W5500 w5500(&PC13,&PC14,&PC15,&spi2);
@@ -38,6 +38,10 @@ u8 jdq1State=0;
 u8 jdq2State=0;
 u8 recvBuf[100];//接收缓冲区
 UDPMessage msg;//udp发送帧结构
+  
+uint8_t disp_mode = 0;
+uint16_t num_of_enter = 0;
+uint16_t num_of_out = 0;
 
 	
 void initUDPServer()
@@ -55,7 +59,7 @@ void initUDPServer()
   uart1.printf("GW : %d.%d.%d.%d\r\n", ip[0],ip[1],ip[2],ip[3]);
 	
 	udp.begin(SOCKET0,30000);
-	uart1.printf("udp server is begin on 192.168.1.111,30000\r\n");
+	uart1.printf("udp server is begin on localip:30000\r\n");
 	uart1.printf("=======================\r\n");
 }
 void setup()
@@ -63,11 +67,10 @@ void setup()
 	ebox_init();
 	OS_Init();
 	
-	uart1.begin(9600);
+	uart1.begin(115200);
 	uart1.printf("\r\nuart1 9600 ok!\r\n");
     
-    uart3.begin(115200);//迪文屏接口
-//	disp_test();
+    dwin_init();
 	io_ctr_init();
 	uart1.printf("io control init ok!\r\n");
 

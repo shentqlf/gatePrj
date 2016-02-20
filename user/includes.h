@@ -42,5 +42,9 @@ extern u8 recvBuf[100];
 extern UDPMessage msg;
 extern u8 host_state;//主机在左边还是右边
 
+extern uint8_t disp_mode;
+extern uint16_t num_of_enter;
+extern uint16_t num_of_out;
+
 
 #endif

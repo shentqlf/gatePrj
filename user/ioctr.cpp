@@ -13,7 +13,7 @@
 #define JDQ1_TEST_PIN PB9
 
 #define JDQ2_PIN			PB5
-#define JDQ2_TEST_PIN PB10
+#define JDQ2_TEST_PIN PB9
 
 #define HJS1_PIN            PB0
 #define HJS2_PIN            PB1
