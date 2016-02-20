@@ -7,6 +7,7 @@
 #include "ioctr.h"
 #include "os.h"
 #include "ctrpro.h"
+#include "lcd_dwin.h"
 
 #define TASK_1_STK_SIZE 512
 #define TASK_2_STK_SIZE 256

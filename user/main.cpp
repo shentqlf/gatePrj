@@ -65,7 +65,9 @@ void setup()
 	
 	uart1.begin(9600);
 	uart1.printf("\r\nuart1 9600 ok!\r\n");
-	
+    
+    uart3.begin(115200);//╣ондфа╫с©з
+//	disp_test();
 	io_ctr_init();
 	uart1.printf("io control init ok!\r\n");
 

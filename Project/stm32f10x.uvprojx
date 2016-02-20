@@ -797,6 +797,11 @@
               <FileType>8</FileType>
               <FilePath>..\user\ioctr.cpp</FilePath>
             </File>
+            <File>
+              <FileName>lcd_dwin.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\user\lcd_dwin.cpp</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
