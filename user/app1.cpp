@@ -23,6 +23,9 @@ void task_1()
 			msg.buf = recvBuf;		
 			deal(recvBuf,len);
 		}
+        btn.loop();
+        if(btn.pressed_for(2000,1))
+            PB8.set();
 		OS_DelayTimes(10);
 	}
 }
