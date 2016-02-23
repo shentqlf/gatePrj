@@ -77,7 +77,7 @@ void USART::begin(uint32_t baud_rate)
 
 				break;
 		}
-
+    USART_DeInit(_USARTx);
     USART_InitStructure.USART_BaudRate = baud_rate;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -87,7 +87,7 @@ void USART::begin(uint32_t baud_rate)
     USART_Init(_USARTx, &USART_InitStructure);
 	
 				
-		USART_DMACmd(_USARTx,USART_DMAReq_Tx,ENABLE);    
+	USART_DMACmd(_USARTx,USART_DMAReq_Tx,ENABLE);    
     USART_Cmd(_USARTx, ENABLE);
 }
 void USART::interrupt(FunctionalState enable)

@@ -126,8 +126,8 @@ int setTime(PRO* p)
         str[5] = '\0';
         warningTime = atof((const char*)str);
         
-        flash.write(0x10000,&warningTime,1);
-        flash.read(0x10000,&warningTime,1);
+        flash.write(WARNING_TIME_FLASH_ADDR,&warningTime,1);
+        flash.read(WARNING_TIME_FLASH_ADDR,&warningTime,1);
         uart1.printf("setting:\r\n");
         uart1.printf("warnning time:%d!\r\n",warningTime);
     }
@@ -144,8 +144,8 @@ int set_host_left_right(PRO* p)
 		if(p->para[0] == '0')
 		{
 			host_state = 0;
-            flash.write(0x10010,&host_state,1);
-            flash.read(0x10010,&host_state,1);
+            flash.write(HOST_STATE_FLASH_ADDR,&host_state,1);
+            flash.read(HOST_STATE_FLASH_ADDR,&host_state,1);
             uart1.printf("setting:\r\n");
             uart1.printf("host :%d!\r\n",host_state);
 
@@ -154,8 +154,8 @@ int set_host_left_right(PRO* p)
 		else if(p->para[0] == '1')
 		{
 			host_state = 1;
-            flash.write(0x10010,&host_state,1);
-            flash.read(0x10010,&host_state,1);
+            flash.write(HOST_STATE_FLASH_ADDR,&host_state,1);
+            flash.read(HOST_STATE_FLASH_ADDR,&host_state,1);
             uart1.printf("setting:\r\n");
             uart1.printf("host :%d!\r\n",host_state);
 			ret = 0;
@@ -290,7 +290,50 @@ int set_num_out_mode(PRO* p)
 		ret = -2;
 	return ret;
 }
+int set_local_ip(PRO* p)
+{
+	int ret = 0;
+	if(connectState == 1)
+	{
+        int i = 0,j = 0,k=0;
+        u8 str[6]={0};
+        while(1)
+        {
+            str[k] = p->para[i];
+            if(p->para[i] == '.' || p->para[i] == '\0')
+            {
+                str[k] = '\0';
+                lip[j] = atof((const char*)str);
+                j++;
+                k=0;
+            }
+            else
+            {
+                k++;
+            }
+            i++;
+            
+            if(j>=4 && i <= MAX_LENGTH)
+            {
+                save_ip(lip);
+                ret = 0;
+                break;
+            }
+            
+            if(i > MAX_LENGTH)//²ÎÊı´íÎó
+            {
+                ret = -1;
+                break;
+            }
+        }        
+        uart1.printf("IP : %d.%d.%d.%d\r\n", lip[0],lip[1],lip[2],lip[3]);
+        ret = 0;
+    }
+    else
+        ret = -2;
+    return ret;
 
+}
 PRO* getCMD()
 {
 	for(int i =0; i < 10;i ++)
@@ -352,6 +395,9 @@ void exec(PRO* pro)
                 case '9':
                     ret = set_num_out_mode(pro);
                     break;
+                case 'A':
+                    ret = set_local_ip(pro);
+                    break;
 				default :
 					ret = 9;
 					break;
@@ -362,7 +408,12 @@ void exec(PRO* pro)
 			msg.buf = ackBuf;
 
 			udp.send(&msg);
+            
 			pro->flag = 0;
+            pro->cmd = 0;
+            pro->type = 0;
+            for(int i = 0; i < MAX_LENGTH; i++)
+                pro->para[i] = 0;
 
 		}
 }

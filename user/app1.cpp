@@ -25,7 +25,11 @@ void task_1()
 		}
         btn.loop();
         if(btn.pressed_for(2000,1))
+        {
             PB8.set();
+            set_ip_as_default(lip);
+            save_ip(lip);
+        }
 		OS_DelayTimes(10);
 	}
 }
