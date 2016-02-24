@@ -16,11 +16,13 @@ int connect(PRO* p)
 	if(p->para[0] == '0')
 	{
 		connectState = 0;
+        ring_disconnect();
 		ret = 0;
 	}
 	else if(p->para[0] == '1')
 	{
 		connectState = 1;
+        ring_connect();
 		ret = 0;
 	}
 	else

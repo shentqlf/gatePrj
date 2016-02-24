@@ -109,16 +109,8 @@ void setup()
 
     
 
-    for(int i = 0; i < 2; i++)
-    {
-        led_on();
-        beep_on();	
-        delay_ms(200);    
-        led_off();
-        beep_off();    
-        delay_ms(200);    
-    }
 
+    ring_start();
 	
 	OS_TaskCreate(task_1,&TASK_1_STK[TASK_1_STK_SIZE-1],TASK1_PRIO);
 	OS_TaskCreate(task_2,&TASK_2_STK[TASK_2_STK_SIZE-1],TASK2_PRIO);
@@ -140,7 +132,39 @@ int main(void)
 	{
 
 	}
+}
 
+void ring_start()
+{
+    for(int i = 0; i < 2; i++)
+    {
+        led_on();
+        beep_on();	
+        delay_ms(100);    
+        led_off();
+        beep_off();    
+        delay_ms(100);    
+    }
+}
+void ring_connect()
+{
+    for(int i = 0; i < 2; i++)
+    {
+        led_on();
+        beep_on();	
+        delay_ms(100);    
+        led_off();
+        beep_off();    
+        delay_ms(100);    
+    }
+}
+void ring_disconnect()
+{
+    led_on();
+    beep_on();	
+    delay_ms(500);       
+    led_off();
+    beep_off();    
 }
 
 void save_ip(u8 *ip)

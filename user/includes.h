@@ -62,4 +62,10 @@ extern u8 gw[];/*定义gateway变量*/
 void save_ip(u8 *ip);
 void load_ip(u8 *ip);
 void set_ip_as_default(u8 *ip);
+
+
+//铃声
+void ring_start();
+void ring_connect();
+void ring_disconnect();
 #endif
