@@ -7,12 +7,14 @@ void task_1();
 void task_2();
 void task_3();
 void task_4();
+void task_5();
 
 
  STACK_TypeDef TASK_1_STK[TASK_1_STK_SIZE];
  STACK_TypeDef TASK_2_STK[TASK_2_STK_SIZE];
  STACK_TypeDef TASK_3_STK[TASK_3_STK_SIZE];
  STACK_TypeDef TASK_4_STK[TASK_4_STK_SIZE];
+ STACK_TypeDef TASK_5_STK[TASK_5_STK_SIZE];
 
 
 
@@ -116,6 +118,7 @@ void setup()
 	OS_TaskCreate(task_2,&TASK_2_STK[TASK_2_STK_SIZE-1],TASK2_PRIO);
 	OS_TaskCreate(task_3,&TASK_3_STK[TASK_3_STK_SIZE-1],TASK3_PRIO);
 	OS_TaskCreate(task_4,&TASK_4_STK[TASK_4_STK_SIZE-1],TASK4_PRIO);
+	OS_TaskCreate(task_5,&TASK_5_STK[TASK_5_STK_SIZE-1],TASK5_PRIO);
 	OS_Start();
 	
 	

@@ -10,34 +10,33 @@
 #define DEFAULT 5
 
 #define TIMEOUT   5000
-u8 inout_buf[] = "$,5,0,0,;";
+u8 inout_buf_2[] = "$,5,0,0,;";
 
-u8 host_state;
-void out_one()
+void out_one_2()
 {
     uart1.printf("出去一个人\r\n");
     if(connectState == 1)
     {
-        inout_buf[6] = '0';
-        msg.len = sizeof(inout_buf);
-        msg.buf = inout_buf;
+        inout_buf_2[6] = '0';
+        msg.len = sizeof(inout_buf_2);
+        msg.buf = inout_buf_2;
         udp.send(&msg);
     }
 }
-void in_one()
+void in_one_2()
 {
     uart1.printf("进入一个人\r\n");
     if(connectState == 1)
     {
-        inout_buf[6] = '1';
-        msg.len = sizeof(inout_buf);
-        msg.buf = inout_buf;
+        inout_buf_2[6] = '1';
+        msg.len = sizeof(inout_buf_2);
+        msg.buf = inout_buf_2;
         udp.send(&msg);
     }
 }
 
 
-void task_4()//统计进出人
+void task_5()//统计进出人
 {
     int status = DEFAULT;
     int delay_times = 500;
@@ -48,32 +47,32 @@ void task_4()//统计进出人
         switch(status)
         {
             case DEFAULT:
-                if(read_hjs1() == 1)
+                if(read_hjs3() == 1)
                     status = FIRST_IN;
-                if(read_hjs2() == 1)
+                if(read_hjs4() == 1)
                     status = FIRST_OUT;
                 break;
             case FIRST_IN:
-                if(read_hjs2() == 1)
+                if(read_hjs4() == 1)
                 {
                     OS_DelayTimes(1000);
                     status = OUT;
                     if(host_state == 1)
-                        out_one();
+                        out_one_2();
                     else
-                        in_one();
+                        in_one_2();
                     status = DEFAULT;
                 }
                 break;
             case FIRST_OUT:
-                if(read_hjs1() == 1)
+                if(read_hjs3() == 1)
                 {
                     OS_DelayTimes(1000);
                     status = IN;
                     if(host_state == 1)
-                        in_one();
+                        in_one_2();
                     else
-                        out_one();
+                        out_one_2();
                     status = DEFAULT;
                 }
                 break;

@@ -15,4 +15,6 @@ void jdq2_on();
 void jdq2_off();
 int read_hjs1();
 int read_hjs2();
+int read_hjs3();
+int read_hjs4();
 #endif

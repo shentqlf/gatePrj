@@ -18,12 +18,14 @@
 #define TASK_2_STK_SIZE 256
 #define TASK_3_STK_SIZE 512
 #define TASK_4_STK_SIZE 128
+#define TASK_5_STK_SIZE 128
 
 
 #define TASK1_PRIO 1
 #define TASK2_PRIO 0
 #define TASK3_PRIO 2
 #define TASK4_PRIO 3
+#define TASK5_PRIO 4
 
 extern STACK_TypeDef TASK_1_STK[TASK_1_STK_SIZE];
 extern STACK_TypeDef TASK_2_STK[TASK_2_STK_SIZE];
