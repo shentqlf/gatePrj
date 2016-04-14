@@ -638,54 +638,14 @@
           <GroupName>edriver</GroupName>
           <Files>
             <File>
-              <FileName>74HC595.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\74HC595.cpp</FilePath>
-            </File>
-            <File>
               <FileName>Button.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\edriver\Button.cpp</FilePath>
             </File>
             <File>
-              <FileName>DS3231.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\DS3231.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>encoder.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\encoder.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>LCD1602.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\LCD1602.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>LED.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\LED.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>MPU6050.CPP</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\MPU6050.CPP</FilePath>
-            </File>
-            <File>
-              <FileName>w25x16.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\w25x16.cpp</FilePath>
-            </File>
-            <File>
               <FileName>w5500.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\edriver\w5500.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>mmc_sd.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\edriver\mmc_sd.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -736,26 +696,6 @@
               <FileName>tcp.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\network\tcp.cpp</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>fat</GroupName>
-          <Files>
-            <File>
-              <FileName>wrapperdiskio.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\fat\wrapperdiskio.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>diskio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fat\diskio.c</FilePath>
-            </File>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\fat\ff.c</FilePath>
             </File>
           </Files>
         </Group>
