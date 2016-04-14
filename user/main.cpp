@@ -182,7 +182,7 @@ void set_ip_as_default(u8 *ip)
 {
     ip[0] = 192;
     ip[1] = 168;
-    ip[2] = 1;
+    ip[2] = 0;
     ip[3] = 2;
 
 }

@@ -1,5 +1,6 @@
 #include "lcd_dwin.h"
 
+#define DISP_DEBUG 1
 
 typedef union 
 {
@@ -18,6 +19,8 @@ void dwin_init()
 {
     uart3.begin(115200);
     uart3.printf("uart3 is ok\r\n");
+    if(DISP_DEBUG == 1)
+        disp_test();
     disp_item(0);
     delay_ms(100);
 }
@@ -101,18 +104,18 @@ void disp_test()
     disp_item(PIC_2_OUT);
     delay_ms(10);
     set_var_u16(VAR_2_NUM_OUT,65535);
-    delay_ms(1000);
+    delay_ms(500);
     
     disp_item(PIC_3_ENTER);
     delay_ms(10);
     set_var_u16(VAR_3_NUM_ENTER,345);
-    delay_ms(1000);
+    delay_ms(500);
     
     disp_item(PIC_5_ENTER_OUT);
     delay_ms(10);
     set_var_u32(VAR_5_NUM_OUT,0x00ff);
     delay_ms(10);
     set_var_u16(VAR_5_NUM_ENTER,65535);
-    delay_ms(1000);
+    delay_ms(500);
         
 }
